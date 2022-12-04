@@ -1,0 +1,195 @@
+# Introdução à Estatística
+
+
+## Tipos de Variáveis
+
+### Qualitativas
+
+- Nominais
+  - Exemplos
+    - Nacionalidade
+    - Estado Civil
+    - Vacinado ou não
+    - Tipos de Solo
+    - Tipos de comorbidade
+
+- Ordinais
+    - Exemplos
+        - Escalas Likert
+        - Faixa de renda
+        - Escolaridade
+
+
+### Quantitativas
+
+- Discretas
+    - Exemplos
+        - Idade
+        - Quantidade de Filhos
+
+- Contínuas
+    - Exemplos
+        - Renda (em R$)
+        - Altura de pessoas (em cm)
+        - Peso (em kg)
+        - Retorno de ações na bolsa
+
+
+## Estatística Descritiva
+
+### Tabela de Frequências
+
+- Quantidade de 
+ocorrências 
+por categoria
+
+- Tipos
+  - Frequência absoluta:
+    - contagem de ocorrências em cada categoria
+  - Frequência relativa
+    - percentual de cada categoria em relação ao total de observações
+  - Frequência acumulada: 
+    - soma da frequência absoluta a cada nova categoria
+  - Frequência relativa acumulada
+    - soma da frequência relativa a cada nova categoria
+
+
+### Medidas de Posição
+
+#### Média
+
+- O que é?
+    - Soma de todos valores divida pela quantidade de valores
+- Fórmula    
+    - $\bar{X}=\dfrac{\sum^{n}_{i=1}x_i}{2}$
+- Interpretação
+    - Descreve a amostra como um único valor que representa o centro dos dados.
+
+#### Mediana
+
+- O que é?
+  - Valor do elemento central, considerando que os valores estejam ordenados crescentemente
+- Fórmula
+  - $$
+    Md(x) = \left\{\begin{matrix}
+        \frac{X_{d\frac{n}{2}} + X_{\frac{n}{2}+1}}{2} & \text{, se n for par} \\
+        X_{(\frac{n+1}{2})} & \text{, se n for impar} \\        
+    \end{matrix}\right.
+    $$
+
+- Interpretação
+   - Exp
+
+
+#### Moda
+
+#### Percentis
+
+
+#### Quartis
+
+#### Decis
+
+### Medidas de Dispersão
+
+#### Amplitude
+
+#### Variância
+
+#### Erro padrão
+
+#### Coeficiente de variação
+
+### Relação entre variáveis
+
+#### Testes por tipo de variáveis
+
+##### Qualitativa
+
+###### Qui-Quadrado de Pearson($\chi^2$)
+
+- Relação entre o quadrado da diferença da frequência observada e a esperada pela  frequência esperada
+
+- Quanto a minha frequência observada difere da minha esperada?
+  - Freq. esperada é considerando que não há diferença alguma entre as categorias
+- Fórmula: 
+  - $\chi^2=\dfrac{(observado - esperado)^2}{esperado}$
+  - ou
+  - $\chi^2=\dfrac{resíduo^2}{esperado}$
+
+- MatRef
+  - [](http://w3.ufsm.br/adriano/aulas/qq/pqq.pdf)  
+
+##### Quantitativa 
+
+###### Correlação de Pearson
+
+
+## Distribuições de probabilidade
+
+### Discretas
+
+#### Uniforme
+
+#### Bernoulli
+
+#### Binomial
+
+#### Binomial Negativa
+
+#### Poisson
+
+### Contínuas
+
+#### Normal
+
+##### Normal Padrão
+
+- Tem média = 0 e dp = 1
+
+#### Qui-quadrado
+
+- Graus de liberdade
+
+
+#### t de Student
+
+#### F de Snedecor
+
+## Testes de Hipóteses
+
+
+
+- Finalidade
+
+- Tipos de Testes
+  - Bilateral (bicaudal)
+  - Unilateral à esquerda
+  - Unilateral à direita
+
+- Tipos de Erros
+
+- Nível de significância
+
+- P-valor e nível de significância
+
+- Testes
+  - Teste Z para médias de uma amostra
+
+  - Teste t para médias de uma amostra
+
+  - Teste t para correlações
+
+  - Teste qui-quadrado para uma amostra
+
+  - Teste F para comparação de variâncias
+
+  - Intervalo de confiança para a média
+
+  - Teste t para comparação de médias em duas amostras independentes
+
+ 
+
+
+
+

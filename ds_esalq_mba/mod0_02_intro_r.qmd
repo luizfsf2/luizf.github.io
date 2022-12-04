@@ -1,0 +1,427 @@
+---
+title: "Introdução ao R"
+execute: 
+    eval: false
+---
+
+
+## base
+
+### funcões
+
+- função com um argumento
+    ``` {r}
+    #| eval: false
+    # declarando
+    atualizar <- function(histórico) {
+        atual <- ((histórico + 17)/2)
+        return(atual)
+    }
+    # usando um escalar
+    atualizar(1)
+    # usando com um vetor
+    atualizar(c(1:15))
+    ```
+
+- função com dois argumentos
+    ``` {r}
+    #| eval: false
+    # declarando
+    ajustar <- function(valor1, valor2) {
+        ajuste <- ((valor1 + 180)/(valor2 - 60))
+        return(ajuste)
+    }
+    # usando com escalares
+    ajustar(100, 80)
+    # usando com vetores
+    ajustar(c(0,1,2), c(61, 62, 63)) 
+    # usando com vetor  e escalar
+    ajustar(c(0,1,2), 61)
+    ```
+### estruturas condicionais
+
+- if
+    ``` {r}
+    valor <- 100000
+    if (valor >= 1000000) {
+        "número grande"
+    }
+    ```
+
+- if e else
+    ``` {r}
+    valor <- 100000
+    if (valor >= 1000000) {
+        ret <- "número grande"
+    } else {
+        ret <- "número pequeno"
+    }
+    ```
+
+- ternário
+    ``` {r}
+    valor <- 100000
+    ret <- if (valor >= 1000000) "número grande" else "número pequeno"        
+    ```
+
+- múltiplas condições
+    ``` {r}
+    valor <- 650000
+
+    if (valor >= 1000000) {
+        ret <- "número grande"
+    } else if (valor >= 500000 & valor <1000000) {
+        ret <- "número intermediário"
+    } else {
+        ret <- "número pequeno"
+    }
+    
+    ```
+
+### estruturas de repetição
+
+- for
+    ``` {r}
+    for (i in c(1:15)) {
+        print((i + 17)/2)
+    }
+    ```
+- while
+    ``` {r}
+    valores <- 2
+    while(valores < 100){
+        valores <- (valores + 20)
+        print(valores)
+    }
+    ```
+
+## data.frame
+
+### Ler
+
+- .rdata
+    - load
+        ``` {r}
+        #| eval: false
+        load("(2) desempenho_aluno_escola.RData")`
+        ```
+- xlsx
+    - readxl.read_excel
+        ``` {r}
+        #| eval: false
+        library(readxl)
+        preco <- read_excel("(2) precos_acao.xlsx") 
+        ``` 
+- cvs
+    - arquivo local
+        ``` {r}   
+        #| eval: false  
+        pib_paises <- read.csv("(2) pib_paises.csv",
+                                sep = ",",
+                                dec = ".")
+        ```           
+    - arquivo online
+        ``` {r}
+        #| eval: false     
+        bndes <- read.csv("http://api.bcb.gov.br/dados/serie/bcdata.sgs.7415/dados?formato=csv&dataInicial=01/01/2010&dataFinal=31/12/2020",
+                sep = ";")
+        ```           
+
+### Salvar
+
+- rdata
+    ``` {r}
+    #| eval: false
+    save(banco_dados_um, file = "(3) dados_salvos_1.RData")
+    ```
+- xlsx
+    ``` {r}
+    #| eval: false
+    install.packages("writexl")
+    library("writexl")
+
+    write_xlsx(banco_dados_dois,"(3) dados_salvos_2.xlsx")
+    ```
+- csv
+    ``` {r}
+    write.csv(banco_dados_tres, file = "(3) dados_salvos_3.csv", row.names = F)
+    ```
+
+### Visualizar
+
+- tabela em outra aba
+    ``` {r}
+    load("(2) desempenho_aluno_escola.RData") # Se já estiver carregada, não precisa
+
+    View(desempenho_aluno_escola)
+    ```
+
+- primeiras linhas da tabela
+    ``` {r}
+    head(desempenho_aluno_escola, n = 10)
+    ```
+
+- nomes das colunas
+    ``` {r}
+    names(desempenho_aluno_escola)
+    ```
+
+- nro linhas
+    ``` {r}
+    nrow(desempenho_aluno_escola)
+    ```
+
+- nro colunas
+    ``` {r}
+    ncol(desempenho_aluno_escola)
+    ```
+
+- dimensão (linhas, colunas)
+    ``` {r}
+    dim(desempenho_aluno_escola)
+    ```
+
+- estrutura da tabela
+    - mostra nro de linhas, colunas
+    - nomes, tipo e alguns valores de cada coluna
+      ``` {r}
+      str(desempenho_aluno_escola)
+      ```
+
+- estatística descritiva da coluna
+    ``` {r}
+    summary(pib_paises$var_pib_capita_ajust)
+    ```
+- estatística descritiva da tabela
+    ``` {r}
+    summary(pib_paises)
+    ```
+
+### Fatiar
+
+- célula
+    - selecionar célula pela posição    
+        ``` {r}
+        desempenho_aluno_escola[1 , 3] # linha 1, coluna 3
+        ```
+- coluna    
+    - selecionar coluna pelo nome
+        ``` {r}
+            desempenho_aluno_escola$desempenho
+        ```
+    - selecionar coluna inteira pela posição
+        ``` {r}
+            # Quais são as observações para a variável da 6ª coluna (tipo de escola?)? 
+            desempenho_aluno_escola[ , 6]
+        ```
+    - selecionar coluna inteira pelo nome
+        ``` {r}
+            # Quais são as observações para a variável "priv" (tipo de escola?)? 
+            desempenho_aluno_escola[ , "priv"]
+        ```
+    - selecionar várias colunas inteiras pela posição
+        ``` {r}
+            # Poderíamos reorganizar a ordem das variáveis
+            desempenho_aluno_escola[ , c(2,5,3,4,1,6)]
+        ```
+
+    - selecionar várias colunas inteiras pelo nome
+        ``` {r}
+            # Poderíamos reorganizar a ordem das variáveis
+            desempenho_aluno_escola[ , c("estudante", "desempenho", "horas")]
+        ```   
+- linha
+    - selecionar linha inteira pela posição
+        ``` {r}
+            # Quais são os valores de todas as variáveis do 5º aluno?  
+            desempenho_aluno_escola[5 , ]
+        ```
+
+    - selecionar intervalo de linhas inteiras pela posição
+        ``` {r}
+            # Quais são os valores de todas as variáveis para os alunos de 7 a 12?
+            desempenho_aluno_escola[c(7:12), ]
+        ```
+
+    - selecionar linhas por condição
+        ``` {r}
+            # alunos com desempenho maior que 50
+            desempenho_aluno_escola[desempenho_aluno_escola$desempenho > 50,]
+        ```
+        ``` {r}
+            # alunos de escola pública
+            desempenho_aluno_escola[desempenho_aluno_escola$priv == "pública",]
+        ```
+        ``` {r}
+            # alunos de escola pública com desempenho até 20           
+            desempenho_aluno_escola[desempenho_aluno_escola$priv == "pública" &
+                                    desempenho_aluno_escola$desempenho <= 20,]
+        ```       
+
+
+
+### Editar
+
+- remover colunas por posição
+    ``` {r}
+    # excluir as variáveis "horas" e "tempo de experiência"
+    novos_dados_1 <- desempenho_aluno_escola[ , -c(4,5)]
+    ```
+
+- remover linhas por posição
+    ``` {r}
+    # removendo as linhas de 476 até 522
+    novos_dados_2 <- desempenho_aluno_escola[ -c(476:522), ]
+    ```
+
+- trocar nomes das colunas
+    ``` {r}
+    nomes <- c("ano","paises_regioes","var_pib_capita","var_pib_total")
+    names(pib_paises) <- nomes
+    ```
+- transformando coluna de texto para número
+    ``` {r}
+    pib_paises$var_pib_capita_ajust <- as.numeric(pib_paises$var_pib_capita)
+    ```
+
+- transformando coluna nominal e categórica
+    ``` {r}
+    perfil_investidor$perfil <- factor(perfil_investidor$perfil,
+                                        levels = c("Conservador", 
+                                                    "Moderado", 
+                                                    "Agressivo"))
+    ```
+
+### Funções
+
+- correlações
+    ``` {r}
+    cor(tempo_dist[, 2:4])
+    ```
+      - ```
+            correlacoes
+                        tempo distancia semaforos
+            tempo     1.0000000 0.9052213 0.9091548
+            distancia 0.9052213 1.0000000 0.7559144
+            semaforos 0.9091548 0.7559144 1.0000000  
+        ```
+
+
+## ggplot
+
+- cores diponíveis
+    ``` {r}
+    colours()
+    ```
+
+- gráfico de barras
+    - básico
+        ``` {r}
+            ggplot(data = perfil_investidor) +
+                geom_bar(aes(x = perfil))
+        ```
+    - formatado
+        ``` {r}
+            ggplot(data = perfil_investidor) +
+                geom_bar(aes(x = perfil), color = "red", fill = "blue") + # barra preenchida azul com contorno vermelho
+                labs(title = "Perfil dos Investidores", # título do gráfico
+                    subtitle = "Banco X",
+                    x = "Perfil do Investidor",
+                    y = "Quantidade",
+                    caption = "Período: 2020") +
+                theme_light() # fundo branco
+        ```
+    - barras horizontais
+        ``` {r}
+            ggplot(data = perfil_investidor) +
+                geom_bar(aes(x = perfil), color = "red", fill = "blue") +
+                geom_text(aes(x = perfil, label = ..count..), stat = "count", hjust = -1) +
+                labs(title = "Perfil dos Investidores",
+                    subtitle = "Banco X",
+                    x = "Perfil do Investidor",
+                    y = "Quantidade",
+                    caption = "Período: 2020") +
+                coord_flip() +
+                theme_light()
+        ```
+- histograma
+    - básico
+        ``` {r}
+            ggplot(data = desempenho_aluno_escola) +
+                geom_histogram(aes(x = desempenho))
+        ```
+    - formatado
+        ``` {r}
+            ggplot(data = desempenho_aluno_escola) +
+                # contorno das barras: color, preenchimento: fill, bins
+                geom_histogram(aes(x = desempenho), color = "black", fill = "light green", bins = 50) +
+                labs(x = "Desempenho Escolar",
+                    y = "Frequência") +
+                theme_bw()
+        ```
+
+- dispersão
+    ``` {r}
+    ggplot(atlas_ambiental) +
+        geom_point(aes(x = renda, y = escolaridade))    
+    ```
+
+    ``` {r}
+    ggplot(atlas_ambiental) +
+        geom_point(aes(x = renda, y = escolaridade, 
+                        size = idade,                # ponto cresce conforme idade
+                        color = favel < 6,           # cor indica se há favela ou não
+                        shape = mortalidade > 18)) + # forma indica mortalidade
+        geom_smooth(aes(x = renda, y = escolaridade), method = "loess", se = FALSE) +
+        labs(title = "Indicadores dos Distritos do Município de São Paulo",
+            x = "Renda",
+            y = "Escolaridade") +
+        theme_bw()   
+    ```
+
+- linhas
+    - básico
+        ``` {r}
+            ggplot(preco_acao) +
+                # color = categorias
+                geom_line(aes(x = data, y = preco, color = acao))    
+        ```
+    - linhas formatado
+        ``` {r}
+            ggplot(preco_acao) +
+                geom_line(aes(x = data, y = preco, color = acao)) + 
+                geom_point(aes(x = data, y = preco, color = acao)) +
+                labs(x = "Mês de Referência",
+                    y = "Cotação de Fechamento",
+                    title = "Série Histórica das Ações",
+                    color = "Empresa") +
+                theme_classic()
+        ```
+    - linhas interativo
+        ``` {r}
+            ggplotly(
+                ggplot(preco_acao) +
+                geom_line(aes(x = data, y = preco, color = acao)) + 
+                geom_point(aes(x = data, y = preco, color = acao)) +
+                labs(x = "Mês de Referência",
+                    y = "Cotação de Fechamento",
+                    title = "Série Histórica das Ações",
+                    color = "Empresa") +
+                theme_classic()
+                )
+        ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

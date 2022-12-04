@@ -1,0 +1,37 @@
+project:
+  type: book
+  preview:
+      port: 4200
+      browser: false
+
+book:
+  title: "MBA Data Science - USP/ESALQ"
+  lang: pt
+  author: "Luiz Fernando"
+  date: "10/12/2022"
+  search: true
+  chapters:
+    - index.qmd
+    - part: Módulo 0 - Nivelamento
+      chapters:       
+        - mod0_01_intro_estatistica.qmd
+        - mod0_02_intro_r.qmd
+    - part: Módulo 1 - Unsupervised Machine Learning
+      chapters:       
+        - mod1_01_clustering.qmd        
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+
+
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+
+

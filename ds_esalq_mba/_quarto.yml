@@ -16,13 +16,17 @@ book:
     - part: Módulo 0 - Nivelamento
       chapters:       
         - mod0_01_intro_estatistica.qmd
-        - mod0_02_intro_r.qmd
+        - mod0_02_intro_r.qmd        
     - part: Módulo 1 - Unsupervised Machine Learning
       chapters:       
-        - mod1_01_clustering.qmd        
-    - intro.qmd
-    - summary.qmd
-    - references.qmd
+        - mod1_01_00_clustering.qmd
+        - mod1_01_01_analise_de_cluster_vestibular.qmd
+        - mod1_01_02_analise_de_cluster_paises.qmd
+
+
+    # - intro.qmd
+    # - summary.qmd
+    # - references.qmd
 
 
 

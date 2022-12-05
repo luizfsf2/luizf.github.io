@@ -1,0 +1,341 @@
+---
+author: "Luiz Favaro"
+format: html
+editor: visual
+---
+
+# Exemplo Países {.unnumbered}
+
+**Curso:** MBA DSA USP ESALQ
+
+**Aula:** Unsupervised Machine Learning Clustering_I\_e_II
+
+**Prof.:** Wilson Tarantin Jr.
+
+**Fonte:** https://www.kaggle.com/datasets/rohan0301/unsupervised-learning-on-country-data
+
+**Objetivo:** categorizar os países por meio dos indicadores sociais e econômicos
+
+## Preparação
+
+### Instalação e carregamento dos pacotes utilizados
+
+```{r}
+pacotes <- c("plotly", #plataforma gráfica
+             "tidyverse", #carregar outros pacotes do R
+             "ggrepel", #geoms de texto e rótulo para 'ggplot2' que ajudam a
+             #evitar sobreposição de textos
+             "knitr", "kableExtra", #formatação de tabelas
+             "reshape2", #função 'melt'
+             "misc3d", #gráficos 3D
+             "plot3D", #gráficos 3D
+             "cluster", #função 'agnes' para elaboração de clusters hierárquicos
+             "factoextra", #função 'fviz_dend' para construção de dendrogramas
+             "ade4") #função 'ade4' para matriz de distâncias em var. binárias
+if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
+  instalador <- pacotes[!pacotes %in% installed.packages()]
+  for(i in 1:length(instalador)) {
+    install.packages(instalador, dependencies = T)
+    break()}
+  sapply(pacotes, require, character = T) 
+} else {
+  sapply(pacotes, require, character = T) 
+}
+```
+
+## Exploratória
+
+### Importando os dados
+
+```{r}
+paises <- read.csv("./data/mod1_01_02_dados_paises.csv", sep = ",", dec = ".")
+paises
+```
+
+### Estatísticas descritivas
+
+```{r}
+summary(paises)
+```
+
+As variáveis apresentam unidades de medida e amplitudes muito distintas.
+
+### Padronizando as variáveis
+
+```{r}
+pais_padronizado <- as.data.frame(scale(paises[,2:10]))
+rownames(pais_padronizado) <- paises$country
+pais_padronizado
+```
+
+Todas as variáveis passam a ter média = 0 e desvio padrão = 1. Por exemplo:
+
+```{r}
+round(mean(pais_padronizado$exports),3)
+round(sd(pais_padronizado$exports))
+round(mean(pais_padronizado$gdpp),3)
+round(sd(pais_padronizado$gdpp))
+```
+
+## Esquema de aglomeração hierárquico
+
+Vamos iniciar com o esquema de aglomeração hierárquico
+
+### Matriz de dissimilaridades
+
+```{r}
+matriz_D <- pais_padronizado %>% 
+  dist(method = "euclidean")
+
+matriz_D
+```
+
+### 1º Teste: Elaboração da clusterização hierárquica como *single linkage*
+
+Clusterização usando o método ***single***:
+
+```{r}
+cluster_hier_single <- agnes(x = matriz_D, method = "single")
+cluster_hier_single
+```
+
+#### Construção do dendrograma "single linkage"
+
+```{r}
+#dev.off()
+fviz_dend(x = cluster_hier_single, show_labels = F)
+```
+
+**Conclusão:** O método de encadeamento *single linkage* não permite uma clusterização útil, pois os *clusters* se formam muito proximamente.
+
+Pode-se interpretar que as **observações estão muito próximas** umas das outras e por isso o *single linkage*.
+
+Quando ocorre isso, convém verificar os outras métodos de encadeamento.
+
+### 2º Teste: Elaboração da clusterização hierárquica como *complete linkage*
+
+```{r}
+cluster_hier_complete <- agnes(x = matriz_D, method = "complete")
+cluster_hier_complete
+```
+
+#### Construção do dendrograma *complete linkage*
+
+```{r}
+fviz_dend(x = cluster_hier_complete, show_labels = F)
+```
+
+O método de encadeamento *complete linkage* gera um esquema de aglomeração que facilita significativamente a visualização dos *clusters*.
+
+### 3º Teste: Elaboração da clusterização hierárquica como "average linkage"
+
+```{r}
+cluster_hier_average <- agnes(x = matriz_D, method = "average")
+cluster_hier_average
+```
+
+#### Construção do dendrograma *average linkage*
+
+```{r}
+fviz_dend(x = cluster_hier_average, show_labels = F)
+```
+
+Melhorou em relação ao *single linkage*, mas o ***complete linkage*** ficou melhor.
+
+### Decisão do método de *linkage*
+
+Vamos optar pelo ***complete linkage*** (*average* cria *clusters* com menos observações).
+
+#### Dendrograma com visualização dos clusters (selecionando por "altura")
+
+Determinando agrupamentos realizados na altura igual a 5,5
+
+```{r}
+fviz_dend(x = cluster_hier_complete,
+          h = 5.5,
+          color_labels_by_k = F,
+          rect = T,
+          rect_fill = T,
+          rect_border = "black",
+          lwd = 1,
+          show_labels = F,
+          ggtheme = theme_bw())
+```
+
+Formam 12 *clusters* cortando o dendrograma na altura 5,50.
+
+Caso quiséssemos menos *clusters*, poderíamos determinar o corte na altura de 10:
+
+```{r}
+fviz_dend(x = cluster_hier_complete,
+          h = 10,
+          color_labels_by_k = F,
+          rect = T,
+          rect_fill = T,
+          rect_border = "black",
+          lwd = 1,
+          show_labels = F,
+          ggtheme = theme_bw())
+```
+
+#### Dendrograma com visualização dos clusters (selecionando por "num. *clusters*")
+
+Ao invés de usar uma determinada altura para definir o número de *clusters*,é possível definir o número de *clusters* desejado diretamente usando o parâmetro k:
+
+```{r}
+fviz_dend(x = cluster_hier_complete,
+          k = 12,
+          color_labels_by_k = F,
+          rect = T,
+          rect_fill = T,
+          rect_border = "black",
+          lwd = 1,
+          show_labels = F,
+          ggtheme = theme_bw())
+```
+
+```{r}
+fviz_dend(x = cluster_hier_complete,
+          k = 6,
+          color_labels_by_k = F,
+          rect = T,
+          rect_fill = T,
+          rect_border = "black",
+          lwd = 1,
+          show_labels = F,
+          ggtheme = theme_bw())
+```
+
+#### Detalhando o dendograma
+
+Vamos detalhar esse esquema hierárquico
+
+```{r}
+coeficientes <- sort(cluster_hier_complete$height, decreasing = FALSE) 
+
+esquema <- as.data.frame(cbind(cluster_hier_complete$merge, coeficientes))
+
+names(esquema) <- c("Cluster1", "Cluster2", "Coeficientes")
+
+esquema
+```
+
+**Interpretação da tabela**
+
+-   Números negativos se referem à observações e o positivos a *clusters*
+
+-   Na primeira linha, que é o estágio 1de aglomeração, a observação 42 foi juntada à observação 122 na altura 0.2696998.
+
+-   Na segunda linha, que é o estágio 2 da aglomeração, a observação 76 foi juntada à observação 140 na altura 0.3449023.
+
+-   A primeira vez que uma nova observação é adicionada a um *cluster* é na quinta linha, que é o estágio 5 da aglomeração, em que a observação 101 é adicionada ao *cluster* gerador no estágio 3 na altura 0.5380817.
+
+### Análise dos *clusters*
+
+#### Cria variável indicadora de *clusters*
+
+Portanto, vamos gerar uma variável indicando 12 *clusters*
+
+```{r}
+paises$cluster_H <- factor(cutree(tree = cluster_hier_complete, k = 12))
+
+pais_padronizado$cluster_H <- factor(cutree(tree = cluster_hier_complete, k = 12))
+
+
+pais_padronizado[order(pais_padronizado$cluster_H),]
+```
+
+#### Análise de variáveis mais contribuintes
+
+A seguir, vamos verificar quais variáveis ajudam na formação de pelo menos um grupo, aplicando a ANOVA e observando se o p-valor é menor que 0,05 (5%)
+
+```{r}
+summary(anova_child_mort <- aov(formula = child_mort ~ cluster_H,
+                                data = pais_padronizado))
+```
+
+p-valor = 2e-16, portanto a variável \`child_mort\` contribuiu para a criação de pelo menos um cluster.
+
+```{r}
+summary(anova_exports <- aov(formula = exports ~ cluster_H,                             data = pais_padronizado))
+```
+
+p-valor = 2e-16, portanto a variável \`exports\` contribuiu para a criação de pelo menos um cluster.
+
+```{r}
+summary(anova_health <- aov(formula = health ~ cluster_H,
+                            data = pais_padronizado))
+```
+
+p-valor = 2e-16, portanto a variável \`exports\` contribuiu para a criação de pelo menos um cluster.
+
+```{r}
+summary(anova_imports <- aov(formula = imports ~ cluster_H,
+                             data = pais_padronizado))
+```
+
+portanto a variável `exports` contribuiu para a criação de pelo menos um cluster.
+
+```{r}
+summary(anova_income <- aov(formula = income ~ cluster_H,
+                            data = pais_padronizado))
+```
+
+portanto a variável `income` contribuiu para a criação de pelo menos um cluster.
+
+```{r}
+summary(anova_inflation <- aov(formula = inflation ~ cluster_H,
+                               data = pais_padronizado))
+```
+
+```{r}
+summary(anova_lifeexpec <- aov(formula = life_expec ~ cluster_H,
+                               data = pais_padronizado))
+```
+
+```{r}
+summary(anova_totalfer <- aov(formula = total_fer ~ cluster_H,
+                              data = pais_padronizado))
+```
+
+```{r}
+summary(anova_gdpp <- aov(formula = gdpp ~ cluster_H,
+                          data = pais_padronizado))
+```
+
+### Conclusão
+
+Todas variáveis auxiliaram na formação de pelo menos um cluster.
+
+### Estudo dos clusters
+
+O que os cluster indicam? Vamos interpretar algumas variáveis médias:
+
+```{r}
+análise <- group_by(paises, cluster_H) %>%
+  summarise(income = mean(income, na.rm = TRUE),
+            gdpp = mean(gdpp, na.rm = TRUE),
+            mort = mean(child_mort, na.rm = TRUE),
+            health = mean(health, na.rm = TRUE),
+            expec = mean(life_expec, na.rm = TRUE))
+#View(análise)
+análise
+```
+
+```{r}
+df <- Reduce(rbind,                                 # Top N highest values by group
+        by(paises,
+           paises["cluster_H"],
+           head,
+           n = 5))
+
+df[,c('country', 'cluster_H')]
+```
+
+Por exemplo: os países do cluster 1 e 4 apresentam:
+
+-   Baixa renda média, baixo PIB per capita,
+
+-   Elevada mortalidade infantil, baixa expectativa de vida
+
+Portanto, são os países em que deve haver ajuda para melhoria das condições.

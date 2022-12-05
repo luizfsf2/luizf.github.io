@@ -121,7 +121,7 @@
 ## Não Hierárquico K-Means
 
 ### Tratamento inicial
-- É sucetível a dados em escala diferentes
+- É sensível a dados em escalas diferentes
     - Necessário realizar padronização antes
         - $ZX_{ji}=\dfrac{X_{ji}-\bar{X_j}}{S_j}$
 
@@ -129,4 +129,7 @@
 ### Escolhas
 
 - Quantidade K de *clusters* é escolhida a priori
+
+
+
  

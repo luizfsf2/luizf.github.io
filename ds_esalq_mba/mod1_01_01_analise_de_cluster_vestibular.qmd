@@ -1,0 +1,428 @@
+---
+author: "Luiz Favaro"
+editor: visual
+format:
+  html:
+    embed-resources: true
+    self-contained-math: true
+---
+
+# Exemplo Vestibular {.unnumbered}
+
+
+**Curso:** MBA DSA USP ESALQ
+
+**Fonte:** Fávero e Belfiore, MANUAL DE ANÁLISE DE DADOS, Capítulo 09
+
+**Prof.:** Wilson Tarantin Jr.
+
+## Preparação
+
+Instalação e carregamento dos pacotes utilizados
+
+```{r}
+pacotes <- c("plotly", #plataforma gráfica
+             "tidyverse", #carregar outros pacotes do R
+             "ggrepel", #geoms de texto e rótulo para 'ggplot2' que ajudam a
+                        #evitar sobreposição de textos
+             "knitr", "kableExtra", #formatação de tabelas
+             "reshape2", #função 'melt'
+             "misc3d", #gráficos 3D
+             "plot3D", #gráficos 3D
+             "cluster", #função 'agnes' para elaboração de clusters hierárquicos
+             "factoextra", #função 'fviz_dend' para construção de dendrogramas
+             "ade4") #função 'ade4' para matriz de distâncias em var. binárias
+
+if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
+  instalador <- pacotes[!pacotes %in% installed.packages()]
+  for(i in 1:length(instalador)) {
+    install.packages(instalador, dependencies = T)
+    break()}
+  sapply(pacotes, require, character = T) 
+} else {
+  sapply(pacotes, require, character = T) 
+}
+```
+
+> Se der o erro: "Error in kable_styling", instale:
+>
+> `sudo apt -y install libfontconfig1-dev` e `sudo apt install cmake`
+
+### Análise Exploratória
+
+#### Carrega a base
+
+```{r}
+load(file = "./data/mod1_01_01_vestibular.RData")
+```
+
+#### Visualiza dados
+
+```{r}
+Vestibular %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", 
+                full_width = FALSE,
+                font_size = 20)
+```
+
+Os dados se constituem em 5 alunos e suas médias em 3 matérias: matemática, física e química.
+
+Renomeia linhas
+
+```{r}
+rownames(Vestibular) <- Vestibular$estudante
+```
+
+#### Visualiza dados em 3D
+
+```{r}
+scatter3D(x=Vestibular$fisica,
+          y=Vestibular$matematica,
+          z=Vestibular$quimica,
+          phi = 0, bty = "g", pch = 20, cex = 2,
+          xlab = "Fisica",
+          ylab = "Matematica",
+          zlab = "Quimica",
+          main = "Vestibular",
+          clab = "Nota de Quimica")>
+  text3D(x=Vestibular$fisica,
+         y=Vestibular$matematica,
+         z=Vestibular$quimica,
+         labels = rownames(Vestibular),
+         add = TRUE, cex = 1)
+```
+
+É possível visualizar os *clusters* formados: a Gabriela e o Ovídio são mais próximos, assim como a Patrícia e o Luiz Felipe. A Leonor está entre os dois grupos.
+
+#### Estatística descritiva
+
+```{r}
+summary(Vestibular)
+```
+
+A média e a mediana das notas de matemática são as maiores, enquanto as da física são as menores. 75% dos alunos tiveram nota de física abaixo de 5, enquanto que em química foram 50% e em matemática 50% tiveram nota a partir de 7.
+
+### Padronização
+
+```{r}
+# Se for necessário padronizar, é possível utilizar a função scale()
+vest_padronizado <- as.data.frame(scale(Vestibular[,2:4]))
+rownames(vest_padronizado) <- Vestibular$estudante
+vest_padronizado
+```
+
+Com a padronização, todas as matérias ficaram com média zero e desvio padrão igual a 1:
+
+```{r}
+summary(vest_padronizado)
+```
+
+```{r}
+sapply(vest_padronizado, sd)
+```
+
+### Boxplot
+
+```{r}
+ggplotly(
+  Vestibular %>%
+    melt() %>%
+    ggplot(aes(label = estudante)) +
+    geom_boxplot(aes(x = variable, y = value, fill = variable)) +
+    geom_point(aes(x = variable, y = value), alpha = 0.5) +
+    labs(x = "Variável",
+         y = "Nota") +
+    scale_fill_manual("Legenda:",
+                      values = c("orange", "purple", "bisque4")) +
+    theme_bw()
+)
+```
+
+## Aglomeração Hierárquica
+
+### Matriz de dissimilaridades (cofenética)
+
+```{r}
+matriz_D <- Vestibular %>% 
+  select(matematica, fisica, quimica) %>% 
+  dist(method = "euclidean")
+matriz_D
+```
+
+```{r}
+data.matrix(matriz_D) %>% 
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", 
+                full_width = FALSE, 
+                font_size = 20)
+```
+
+### Argumentos para a função `dist` de cálculo de distância
+
+-   `euclidean`: distância euclidiana
+
+<!-- -->
+
+-   `euclidiana quadrática`: elevar ao quadrado matriz_D (matriz_D\^2)
+
+-   `maximum`: distância de Chebychev;
+
+-   `manhattan`: distância de Manhattan (ou distância absoluta ou bloco);
+
+-   `canberra`: distância de Canberra;
+
+-   `minkowski`: distância de Minkowski
+
+### Clusterização hierárquica
+
+A partir da matriz cofenética, procede-se com a clusterização hierárquica:
+
+```{r}
+cluster_hier <- agnes(x = matriz_D, method = "single")
+cluster_hier
+```
+
+`Method` é o tipo de encadeamento:
+
+-   `complete`: encadeamento completo *(furthest neighbor ou complete linkage)*
+
+-   `single` : encadeamento único *(nearest neighbor ou single linkage)*
+
+-   `average`: encadeamento médio *(between groups ou average linkage)*
+
+### Definição do esquema hierárquico de aglomeração
+
+Distâncias para as combinações em cada estágio
+
+```{r}
+coeficientes <- sort(cluster_hier$height, decreasing = FALSE) 
+coeficientes
+```
+
+Tabela com o esquema de aglomeração. Interpretação do output:
+
+As linhas são os estágios de aglomeração
+
+Nas colunas Cluster1 e Cluster2, observa-se como ocorreu a junção
+
+-   Quando for número negativo, indica observação isolada
+
+-   Quando for número positivo, indica cluster formado anteriormente (estágio)
+
+-   Coeficientes: as distâncias para as combinações em cada estágio
+
+```{r}
+esquema <- as.data.frame(cbind(cluster_hier$merge, coeficientes))
+names(esquema) <- c("Cluster1", "Cluster2", "Coeficientes")
+esquema
+```
+
+Números positivos indicam o número do cluster
+
+Números negativos indicam que a observação não entrou em nenhum cluster
+
+### Visualização do esquema hierárquico de aglomeração
+
+```{r}
+esquema %>%
+  kable(row.names = T) %>%
+  kable_styling(bootstrap_options = "striped", 
+                full_width = FALSE, 
+                font_size = 20)
+```
+
+### Construção do dendrograma
+
+```{r}
+#dev.off()
+fviz_dend(x = cluster_hier)
+```
+
+### Dendrograma com visualização dos clusters (definição de 3 clusters)
+
+```{r}
+fviz_dend(x = cluster_hier,
+          k = 3,
+          k_colors = c("deeppink4", "darkviolet", "deeppink"),
+          color_labels_by_k = F,
+          rect = T,
+          rect_fill = T,
+          lwd = 1,
+          ggtheme = theme_bw())
+```
+
+### Identificando os *clusters* no *dataset*
+
+Criando a variável categórica para indicação do cluster no banco de dados
+
+```{r}
+# O argumento 'k' indica a quantidade de clusters
+Vestibular$cluster_H <- factor(cutree(tree = cluster_hier, k = 3))
+Vestibular
+```
+
+Visualização da base de dados com a alocação das observações nos *clusters*
+
+```{r}
+Vestibular %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", 
+                full_width = FALSE,
+                font_size = 20)
+```
+
+### Estatísticas descritivas dos *clusters* por variável
+
+> ATENÇÃO: *Clusters* 2 e 3 têm somente uma observação, não calcula `sd`
+
+-   Estatísticas descritivas da variável **matemática**
+
+    ```{r}
+    group_by(Vestibular, cluster_H) %>%
+      summarise(
+        mean = mean(matematica, na.rm = TRUE),
+        sd = sd(matematica, na.rm = TRUE),
+        min = min(matematica, na.rm = TRUE),
+        max = max(matematica, na.rm = TRUE),
+        count = length(matematica))
+    ```
+
+-   Estatísticas descritivas da variável 'fisica'
+
+```{r}
+group_by(Vestibular, cluster_H) %>%
+  summarise(
+    mean = mean(fisica, na.rm = TRUE),
+    sd = sd(fisica, na.rm = TRUE),
+    min = min(fisica, na.rm = TRUE),
+    max = max(fisica, na.rm = TRUE))
+```
+
+-   Estatísticas descritivas da variável **química**
+
+```{r}
+group_by(Vestibular, cluster_H) %>%
+  summarise(
+    mean = mean(quimica, na.rm = TRUE),
+    sd = sd(quimica, na.rm = TRUE),
+    min = min(quimica, na.rm = TRUE),
+    max = max(quimica, na.rm = TRUE))
+```
+
+### Análise de variância de um fator (ANOVA).
+
+Interpretação do output:
+
+-   Mean Sq do cluster_H: indica a variabilidade entre grupos
+
+```{=html}
+<!-- -->
+```
+-   Mean Sq dos Residuals: indica a variabilidade dentro dos grupos
+
+```{=html}
+<!-- -->
+```
+-   F value: estatística de teste (Sum Sq do cluster_H / Sum Sq dos Residuals)
+
+-    Pr(\>F): p-valor da estatística
+
+-   p-valor \< 0.05: pelo menos um cluster apresenta média estatisticamente diferente dos demais
+
+-    A variável mais discriminante dos grupos contém maior estatística F (e significativa)
+
+#### ANOVA da variável 'matematica'
+
+```{r}
+summary(anova_matematica <- aov(formula = matematica ~ cluster_H,
+data = Vestibular))
+```
+
+#### ANOVA da variável 'fisica'
+
+```{r}
+summary(anova_fisica <- aov(formula = fisica ~ cluster_H,
+data = Vestibular))
+```
+
+#### ANOVA da variável 'quimica'
+
+```{r}
+summary(anova_quimica <- aov(formula = quimica ~ cluster_H,
+data = Vestibular))
+```
+
+## Esquema de aglomeração não hierárquico K-MEANS
+
+### Elaboração da clusterização não hieráquica k-means
+
+```{r}
+cluster_kmeans <- kmeans(Vestibular[,2:4],
+                         centers = 3)
+```
+
+`centers`: parametrização da quantidade de *clusters*
+
+### Método de Elbow para identificação do número ótimo de clusters
+
+Apresenta a variação total dentro dos clusters para várias nº de clusters.
+
+Em geral, quando há a dobra é um indício do número ótimo de clusters.
+
+```{r}
+fviz_nbclust(Vestibular[,2:4], kmeans, method = "wss", k.max = 4)
+```
+
+### Criando variável categórica para indicação do cluster no banco de dados
+
+```{r}
+Vestibular$cluster_K <- factor(cluster_kmeans$cluster)
+Vestibular
+```
+
+#### Visualização da base de dados
+
+```{r}
+Vestibular %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", 
+                full_width = FALSE,
+                font_size = 20)
+```
+
+### Análise de variância de um fator (ANOVA)
+
+#### ANOVA da variável 'matematica'
+
+```{r}
+summary(anova_matematica <- aov(formula = matematica ~ cluster_K,
+                                data = Vestibular))
+```
+
+#### ANOVA da variável 'fisica'
+
+```{r}
+summary(anova_fisica <- aov(formula = fisica ~ cluster_K,
+                            data = Vestibular))
+```
+
+#### ANOVA da variável 'quimica'
+
+```{r}
+summary(anova_quimica <- aov(formula = quimica ~ cluster_K,
+                             data = Vestibular))
+```
+
+## Comparando os resultados dos esquemas hierárquico e não hierárquico
+
+```{r}
+Vestibular %>%
+  select(estudante, cluster_H, cluster_K) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped",
+                full_width = FALSE,
+                font_size = 20)
+```
+
+FIM!

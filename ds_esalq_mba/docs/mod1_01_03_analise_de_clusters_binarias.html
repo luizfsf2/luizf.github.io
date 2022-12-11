@@ -1,0 +1,2725 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.113">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Luiz Favaro">
+
+<title>MBA Data Science - USP/ESALQ - Exemplo Pesquisa Binária</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: 1;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./mod1_01_04_analise_de_cluster_varejistas.html" rel="next">
+<link href="./mod1_01_02_analise_de_cluster_paises.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Exemplo Pesquisa Binária</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">MBA Data Science - USP/ESALQ</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Módulo 0 - Nivelamento</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod0_01_intro_estatistica.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introdução à Estatística</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod0_02_intro_r.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introdução ao R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Módulo 1 - Unsupervised Machine Learning</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_00_clustering.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Clustering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_01_analise_de_cluster_vestibular.html" class="sidebar-item-text sidebar-link">Exemplo Vestibular</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_02_analise_de_cluster_paises.html" class="sidebar-item-text sidebar-link">Exemplo Países</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_03_analise_de_clusters_binarias.html" class="sidebar-item-text sidebar-link active">Exemplo Pesquisa Binária</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_04_analise_de_cluster_varejistas.html" class="sidebar-item-text sidebar-link">Exemplo Varejistas</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_05_analise_de_cluster_cartao.html" class="sidebar-item-text sidebar-link">Exemplo Cartão de Crédito</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#preparação" id="toc-preparação" class="nav-link active" data-scroll-target="#preparação">Preparação</a>
+  <ul class="collapse">
+  <li><a href="#instalação-e-carregamento-dos-pacotes-utilizados" id="toc-instalação-e-carregamento-dos-pacotes-utilizados" class="nav-link" data-scroll-target="#instalação-e-carregamento-dos-pacotes-utilizados">Instalação e carregamento dos pacotes utilizados</a></li>
+  <li><a href="#carregamento-da-base-de-dados" id="toc-carregamento-da-base-de-dados" class="nav-link" data-scroll-target="#carregamento-da-base-de-dados">Carregamento da base de dados</a></li>
+  <li><a href="#visualização-da-base-de-dados" id="toc-visualização-da-base-de-dados" class="nav-link" data-scroll-target="#visualização-da-base-de-dados">Visualização da base de dados</a></li>
+  </ul></li>
+  <li><a href="#esquema-de-aglomeração-hierárquico" id="toc-esquema-de-aglomeração-hierárquico" class="nav-link" data-scroll-target="#esquema-de-aglomeração-hierárquico">Esquema de aglomeração hierárquico</a>
+  <ul class="collapse">
+  <li><a href="#matriz-de-dissimilaridades" id="toc-matriz-de-dissimilaridades" class="nav-link" data-scroll-target="#matriz-de-dissimilaridades">Matriz de dissimilaridades</a></li>
+  <li><a href="#visualizando-a-matriz-de-dissimilaridades" id="toc-visualizando-a-matriz-de-dissimilaridades" class="nav-link" data-scroll-target="#visualizando-a-matriz-de-dissimilaridades">Visualizando a matriz de dissimilaridades</a></li>
+  <li><a href="#elaboração-da-clusterização-hierárquica" id="toc-elaboração-da-clusterização-hierárquica" class="nav-link" data-scroll-target="#elaboração-da-clusterização-hierárquica">Elaboração da clusterização hierárquica</a></li>
+  <li><a href="#outras-opções-de-encadeamento" id="toc-outras-opções-de-encadeamento" class="nav-link" data-scroll-target="#outras-opções-de-encadeamento">Outras opções de encadeamento:</a></li>
+  <li><a href="#definição-do-esquema-hierárquico-de-aglomeração" id="toc-definição-do-esquema-hierárquico-de-aglomeração" class="nav-link" data-scroll-target="#definição-do-esquema-hierárquico-de-aglomeração">Definição do esquema hierárquico de aglomeração</a></li>
+  <li><a href="#interpretação-do-output" id="toc-interpretação-do-output" class="nav-link" data-scroll-target="#interpretação-do-output">Interpretação do output</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Exemplo Pesquisa Binária</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Luiz Favaro </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<p><strong>Curso</strong>: MBA DSA USP ESALQ</p>
+<p><strong>Aula:</strong> Unsupervised Machine Learning - Clustering II</p>
+<p><strong>Prof.</strong>: Wilson Tarantin Jr.</p>
+<p><strong>Fonte</strong>: Fávero e Belfiore, MANUAL DE ANÁLISE DE DADOS, Capítulo 09</p>
+<p><strong>Objetivo:</strong> categorizar pessoas conforme respostas a questões com respostas binárias (sim = 1 e não = 0)</p>
+<section id="preparação" class="level2">
+<h2 class="anchored" data-anchor-id="preparação">Preparação</h2>
+<section id="instalação-e-carregamento-dos-pacotes-utilizados" class="level3">
+<h3 class="anchored" data-anchor-id="instalação-e-carregamento-dos-pacotes-utilizados">Instalação e carregamento dos pacotes utilizados</h3>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-1_f4d91051c7fcec16671ba3b05c2af137">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacotes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"plotly"</span>, <span class="co">#plataforma gráfica</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>             <span class="st">"tidyverse"</span>, <span class="co">#carregar outros pacotes do R</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>             <span class="st">"ggrepel"</span>, <span class="co">#geoms de texto e rótulo para 'ggplot2' que ajudam a evitar sobreposição de textos</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>             <span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="co">#formatação de tabelas</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>             <span class="st">"reshape2"</span>, <span class="co">#função 'melt'</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>             <span class="st">"misc3d"</span>, <span class="co">#gráficos 3D</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>             <span class="st">"plot3D"</span>, <span class="co">#gráficos 3D</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>             <span class="st">"cluster"</span>, <span class="co">#função 'agnes' para elaboração de clusters hierárquicos</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>             <span class="st">"factoextra"</span>, <span class="co">#função 'fviz_dend' para construção de dendrogramas</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>             <span class="st">"ade4"</span>) <span class="co">#função 'ade4' para matriz de distâncias em var. binárias</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">sum</span>(<span class="fu">as.numeric</span>(<span class="sc">!</span>pacotes <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="sc">!=</span> <span class="dv">0</span>){</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  instalador <span class="ot">&lt;-</span> pacotes[<span class="sc">!</span>pacotes <span class="sc">%in%</span> <span class="fu">installed.packages</span>()]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(instalador)) {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(instalador, <span class="at">dependencies =</span> T)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span>()}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sapply</span>(pacotes, require, <span class="at">character =</span> T) </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sapply</span>(pacotes, require, <span class="at">character =</span> T) </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: plotly</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'plotly'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ggplot2':
+
+    last_plot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    filter</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:graphics':
+
+    layout</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: tidyverse</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in system("timedatectl", intern = TRUE): running command 'timedatectl'
+had status 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages
+───────────────────────────────────────
+tidyverse 1.3.2 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+✔ readr   2.1.3      ✔ forcats 0.5.2 
+✔ purrr   0.3.4      
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks plotly::filter(), stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+Loading required package: ggrepel
+
+Loading required package: knitr
+
+Loading required package: kableExtra
+
+
+Attaching package: 'kableExtra'
+
+
+The following object is masked from 'package:dplyr':
+
+    group_rows
+
+
+Loading required package: reshape2
+
+
+Attaching package: 'reshape2'
+
+
+The following object is masked from 'package:tidyr':
+
+    smiths
+
+
+Loading required package: misc3d</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: no DISPLAY variable so Tk is not available</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: plot3D
+Loading required package: cluster
+Loading required package: factoextra
+Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa
+Loading required package: ade4</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    plotly  tidyverse    ggrepel      knitr kableExtra   reshape2     misc3d 
+      TRUE       TRUE       TRUE       TRUE       TRUE       TRUE       TRUE 
+    plot3D    cluster factoextra       ade4 
+      TRUE       TRUE       TRUE       TRUE </code></pre>
+</div>
+</div>
+</section>
+<section id="carregamento-da-base-de-dados" class="level3">
+<h3 class="anchored" data-anchor-id="carregamento-da-base-de-dados">Carregamento da base de dados</h3>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-2_15cca722bb65951d00940c419c9b943f">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">"./data/mod1_01_03_pesquisa_binaria.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="contexto" class="level4">
+<h4 class="anchored" data-anchor-id="contexto">Contexto</h4>
+<p>São respostas binárias para 50 perguntas de 35 respondentes.</p>
+<p>Os respondentes são gestores de empresas em 3 setores distintos.</p>
+</section>
+</section>
+<section id="visualização-da-base-de-dados" class="level3">
+<h3 class="anchored" data-anchor-id="visualização-da-base-de-dados">Visualização da base de dados</h3>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-3_7892eaae92027e37c8deab6f38fa4434">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>PesquisaBinária</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 35 × 51
+      q1    q2    q3    q4    q5    q6    q7    q8    q9   q10   q11   q12   q13
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1     0     0     0     0     0     1     0     0     0     1     0     0     1
+ 2     0     1     0     0     0     0     0     1     1     0     1     0     0
+ 3     0     1     0     1     0     1     0     1     1     0     0     0     1
+ 4     1     0     1     1     0     1     0     0     0     1     0     1     0
+ 5     1     0     0     1     1     1     0     0     1     1     0     1     0
+ 6     1     1     0     1     0     0     0     1     1     0     1     1     0
+ 7     0     1     0     1     1     0     0     0     0     0     0     1     1
+ 8     1     0     1     0     1     1     0     0     0     1     0     0     1
+ 9     0     0     0     0     0     1     0     0     0     0     0     0     1
+10     0     0     0     0     0     1     1     0     0     0     0     0     1
+# … with 25 more rows, and 38 more variables: q14 &lt;dbl&gt;, q15 &lt;dbl&gt;, q16 &lt;dbl&gt;,
+#   q17 &lt;dbl&gt;, q18 &lt;dbl&gt;, q19 &lt;dbl&gt;, q20 &lt;dbl&gt;, q21 &lt;dbl&gt;, q22 &lt;dbl&gt;,
+#   q23 &lt;dbl&gt;, q24 &lt;dbl&gt;, q25 &lt;dbl&gt;, q26 &lt;dbl&gt;, q27 &lt;dbl&gt;, q28 &lt;dbl&gt;,
+#   q29 &lt;dbl&gt;, q30 &lt;dbl&gt;, q31 &lt;dbl&gt;, q32 &lt;dbl&gt;, q33 &lt;dbl&gt;, q34 &lt;dbl&gt;,
+#   q35 &lt;dbl&gt;, q36 &lt;dbl&gt;, q37 &lt;dbl&gt;, q38 &lt;dbl&gt;, q39 &lt;dbl&gt;, q40 &lt;dbl&gt;,
+#   q41 &lt;dbl&gt;, q42 &lt;dbl&gt;, q43 &lt;dbl&gt;, q44 &lt;dbl&gt;, q45 &lt;dbl&gt;, q46 &lt;dbl&gt;,
+#   q47 &lt;dbl&gt;, q48 &lt;dbl&gt;, q49 &lt;dbl&gt;, q50 &lt;dbl&gt;, setor &lt;dbl+lbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-4_7bcb385e7c28cf4daf6718280f4cc351">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contagem das categorias (zeros e uns) por variável</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>vetor_var <span class="ot">&lt;-</span> <span class="fu">names</span>(PesquisaBinária)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">map</span>(PesquisaBinária[vetor_var], <span class="sc">~</span> <span class="fu">summary</span>(<span class="fu">as.factor</span>(.)))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$q1
+ 0  1 
+25 10 
+
+$q2
+ 0  1 
+20 15 
+
+$q3
+ 0  1 
+26  9 
+
+$q4
+ 0  1 
+22 13 
+
+$q5
+ 0  1 
+24 11 
+
+$q6
+ 0  1 
+18 17 
+
+$q7
+ 0  1 
+22 13 
+
+$q8
+ 0  1 
+25 10 
+
+$q9
+ 0  1 
+19 16 
+
+$q10
+ 0  1 
+20 15 
+
+$q11
+ 0  1 
+25 10 
+
+$q12
+ 0  1 
+23 12 
+
+$q13
+ 0  1 
+15 20 
+
+$q14
+ 0  1 
+19 16 
+
+$q15
+ 0  1 
+23 12 
+
+$q16
+ 0  1 
+14 21 
+
+$q17
+ 0  1 
+29  6 
+
+$q18
+ 0  1 
+16 19 
+
+$q19
+ 0  1 
+26  9 
+
+$q20
+ 0  1 
+21 14 
+
+$q21
+ 0  1 
+30  5 
+
+$q22
+ 0  1 
+26  9 
+
+$q23
+ 0  1 
+25 10 
+
+$q24
+ 0  1 
+18 17 
+
+$q25
+ 0  1 
+15 20 
+
+$q26
+ 0  1 
+16 19 
+
+$q27
+ 0  1 
+17 18 
+
+$q28
+ 0  1 
+18 17 
+
+$q29
+ 0  1 
+29  6 
+
+$q30
+ 0  1 
+20 15 
+
+$q31
+ 0  1 
+11 24 
+
+$q32
+ 0  1 
+12 23 
+
+$q33
+ 0  1 
+11 24 
+
+$q34
+ 0  1 
+25 10 
+
+$q35
+ 0  1 
+32  3 
+
+$q36
+ 0  1 
+ 9 26 
+
+$q37
+ 0  1 
+27  8 
+
+$q38
+ 0  1 
+29  6 
+
+$q39
+ 0  1 
+31  4 
+
+$q40
+ 0  1 
+ 7 28 
+
+$q41
+ 0  1 
+30  5 
+
+$q42
+ 0  1 
+14 21 
+
+$q43
+ 0  1 
+22 13 
+
+$q44
+ 0  1 
+12 23 
+
+$q45
+ 0  1 
+26  9 
+
+$q46
+ 0  1 
+18 17 
+
+$q47
+ 0 
+35 
+
+$q48
+ 0  1 
+12 23 
+
+$q49
+ 0  1 
+27  8 
+
+$q50
+ 0  1 
+11 24 
+
+$setor
+ 1  2  3 
+11 12 12 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Exemplo de interpretação:</strong></p>
+<ul>
+<li><p>na questão 49, 27 responderam “não” (zero) e 8 responderam que sim (um).</p></li>
+<li><p>na questão 50, 11 responderam “não” (zero) e 24 responderam que sim (um).</p></li>
+<li><p>no setor, 11 são do setor 1, 2</p></li>
+</ul>
+</blockquote>
+</section>
+</section>
+<section id="esquema-de-aglomeração-hierárquico" class="level2">
+<h2 class="anchored" data-anchor-id="esquema-de-aglomeração-hierárquico">Esquema de aglomeração hierárquico</h2>
+<section id="matriz-de-dissimilaridades" class="level3">
+<h3 class="anchored" data-anchor-id="matriz-de-dissimilaridades">Matriz de dissimilaridades</h3>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-5_577555fb335a9037fd51efa3ffcdac33">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>matriz_D <span class="ot">&lt;-</span> PesquisaBinária <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>setor) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dist.binary</span>(<span class="at">method =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Em <code>dist.binary</code>, <code>method = 2</code> indica similaridade por emparelhamento simples.</p>
+<p>O resultado na variável <code>matriz_D</code> é a matriz de dissimilaridade, com as <strong>similaridade spor emparelhamento simples</strong> já convertidas para distâncias, usando <span class="math inline">\(\sqrt{s-1}\)</span>.</p>
+</section>
+<section id="visualizando-a-matriz-de-dissimilaridades" class="level3">
+<h3 class="anchored" data-anchor-id="visualizando-a-matriz-de-dissimilaridades">Visualizando a matriz de dissimilaridades</h3>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-6_d8a8bd7c0891a4346880cda8008e501f">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.matrix</span>(matriz_D) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">full_width =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">font_size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped" style="font-size: 20px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> 1 </th>
+   <th style="text-align:right;"> 2 </th>
+   <th style="text-align:right;"> 3 </th>
+   <th style="text-align:right;"> 4 </th>
+   <th style="text-align:right;"> 5 </th>
+   <th style="text-align:right;"> 6 </th>
+   <th style="text-align:right;"> 7 </th>
+   <th style="text-align:right;"> 8 </th>
+   <th style="text-align:right;"> 9 </th>
+   <th style="text-align:right;"> 10 </th>
+   <th style="text-align:right;"> 11 </th>
+   <th style="text-align:right;"> 12 </th>
+   <th style="text-align:right;"> 13 </th>
+   <th style="text-align:right;"> 14 </th>
+   <th style="text-align:right;"> 15 </th>
+   <th style="text-align:right;"> 16 </th>
+   <th style="text-align:right;"> 17 </th>
+   <th style="text-align:right;"> 18 </th>
+   <th style="text-align:right;"> 19 </th>
+   <th style="text-align:right;"> 20 </th>
+   <th style="text-align:right;"> 21 </th>
+   <th style="text-align:right;"> 22 </th>
+   <th style="text-align:right;"> 23 </th>
+   <th style="text-align:right;"> 24 </th>
+   <th style="text-align:right;"> 25 </th>
+   <th style="text-align:right;"> 26 </th>
+   <th style="text-align:right;"> 27 </th>
+   <th style="text-align:right;"> 28 </th>
+   <th style="text-align:right;"> 29 </th>
+   <th style="text-align:right;"> 30 </th>
+   <th style="text-align:right;"> 31 </th>
+   <th style="text-align:right;"> 32 </th>
+   <th style="text-align:right;"> 33 </th>
+   <th style="text-align:right;"> 34 </th>
+   <th style="text-align:right;"> 35 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.8124038 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.8944272 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.8602325 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.8246211 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.8124038 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8124038 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8944272 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.8124038 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8602325 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.1414214 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.3464102 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.1414214 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.3162278 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.3464102 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.1414214 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.3464102 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8246211 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.3464102 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8124038 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.1414214 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7874008 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.1414214 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.3464102 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8366600 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.7745967 </td>
+   <td style="text-align:right;"> 0.8124038 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.6324555 </td>
+   <td style="text-align:right;"> 0.3162278 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.1414214 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.5291503 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.3464102 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5477226 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6928203 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7615773 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.5656854 </td>
+   <td style="text-align:right;"> 0.5830952 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.7071068 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+   <td style="text-align:right;"> 0.7348469 </td>
+   <td style="text-align:right;"> 0.7483315 </td>
+   <td style="text-align:right;"> 0.6480741 </td>
+   <td style="text-align:right;"> 0.4898979 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6782330 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6164414 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.7211103 </td>
+   <td style="text-align:right;"> 0.6633250 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="elaboração-da-clusterização-hierárquica" class="level3">
+<h3 class="anchored" data-anchor-id="elaboração-da-clusterização-hierárquica">Elaboração da clusterização hierárquica</h3>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-7_7d173b55d2beb2f301bebb0e10901849">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cluster_hier <span class="ot">&lt;-</span> <span class="fu">agnes</span>(<span class="at">x =</span> matriz_D, <span class="at">method =</span> <span class="st">"average"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>cluster_hier</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:    agnes(x = matriz_D, method = "average") 
+Agglomerative coefficient:  0.5257409 
+Order of objects:
+ [1]  1 10  9 11 14 21 23 27 12 20 35  2 13 30 15 18 33 26  3 16 31  6 24  4  5
+[26]  8  7 28 17 32 19 34 25 22 29
+Height (summary):
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.3742  0.4487  0.4149  0.4954  0.7161 
+
+Available components:
+[1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
+[7] "method"    "order.lab"</code></pre>
+</div>
+</div>
+</section>
+<section id="outras-opções-de-encadeamento" class="level3">
+<h3 class="anchored" data-anchor-id="outras-opções-de-encadeamento">Outras opções de encadeamento:</h3>
+<ul>
+<li><code>complete</code>: encadeamento completo (furthest neighbor ou complete linkage)</li>
+<li><code>single</code>: encadeamento único (nearest neighbor ou single linkage)</li>
+<li><code>average</code>: encadeamento médio (between groups ou average linkage)</li>
+</ul>
+</section>
+<section id="definição-do-esquema-hierárquico-de-aglomeração" class="level3">
+<h3 class="anchored" data-anchor-id="definição-do-esquema-hierárquico-de-aglomeração">Definição do esquema hierárquico de aglomeração</h3>
+<p>As distâncias para as combinações em cada estágio</p>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-8_c1d3fade7795888655de0fcb214103da">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>coeficientes <span class="ot">&lt;-</span> <span class="fu">sort</span>(cluster_hier<span class="sc">$</span>height, <span class="at">decreasing =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>coeficientes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.0000000 0.1414214 0.1414214 0.1414214 0.2000000 0.3458035 0.3464102
+ [8] 0.3741657 0.3741657 0.3741657 0.3827772 0.4000000 0.4000000 0.4236068
+[15] 0.4242641 0.4472136 0.4472136 0.4502587 0.4527575 0.4560160 0.4581276
+[22] 0.4690416 0.4793127 0.4805042 0.4850306 0.4988372 0.4990959 0.5054415
+[29] 0.5099020 0.5201551 0.5211280 0.5437994 0.6965222 0.7160760</code></pre>
+</div>
+</div>
+<p>Os coeficientes mostram todas as distâncias em que as observações foram unidas.</p>
+</section>
+<section id="interpretação-do-output" class="level3">
+<h3 class="anchored" data-anchor-id="interpretação-do-output">Interpretação do output</h3>
+<section id="tabela-com-o-esquema-de-aglomeração." class="level4">
+<h4 class="anchored" data-anchor-id="tabela-com-o-esquema-de-aglomeração.">Tabela com o esquema de aglomeração.</h4>
+<p>As linhas são os estágios de aglomeração.</p>
+<p>Nas colunas Cluster1 e Cluster2, observa-se como ocorreu a junção.</p>
+<ul>
+<li><p>Quando for número negativo, indica observação isolada</p></li>
+<li><p>Quando for número positivo, indica cluster formado anteriormente (estágio)</p></li>
+<li><p>Coeficientes: as distâncias para as combinações em cada estágio</p></li>
+</ul>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-9_5212388eb34840421732a3a4b35562ff">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>esquema <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(cluster_hier<span class="sc">$</span>merge, coeficientes))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(esquema) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Cluster1"</span>, <span class="st">"Cluster2"</span>, <span class="st">"Coeficientes"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>esquema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Cluster1 Cluster2 Coeficientes
+1       -18      -33    0.0000000
+2       -19      -34    0.1414214
+3       -17      -32    0.1414214
+4       -16      -31    0.1414214
+5       -20      -35    0.2000000
+6         3        2    0.3458035
+7       -23      -27    0.3464102
+8       -21        7    0.3741657
+9         1      -26    0.3741657
+10      -11      -14    0.3741657
+11      -15        9    0.3827772
+12      -22      -29    0.4000000
+13      -13      -30    0.4000000
+14       -2       13    0.4236068
+15       -4       -5    0.4242641
+16      -12        5    0.4472136
+17       -6      -24    0.4472136
+18       10        8    0.4502587
+19       14       11    0.4527575
+20        6      -25    0.4560160
+21       -3        4    0.4581276
+22       -1      -10    0.4690416
+23       19       21    0.4793127
+24       -9       18    0.4805042
+25       20       12    0.4850306
+26       24       16    0.4988372
+27       15       -8    0.4990959
+28       23       17    0.5054415
+29       -7      -28    0.5099020
+30       22       26    0.5201551
+31       29       25    0.5211280
+32       27       31    0.5437994
+33       28       32    0.6965222
+34       30       33    0.7160760</code></pre>
+</div>
+</div>
+</section>
+<section id="visualização-do-esquema-hierárquico-de-aglomeração" class="level4">
+<h4 class="anchored" data-anchor-id="visualização-do-esquema-hierárquico-de-aglomeração">Visualização do esquema hierárquico de aglomeração</h4>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-10_8624bf5506c8ed5aab5f5d48f5141d73">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>esquema <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">row.names =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">font_size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped" style="font-size: 20px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Cluster1 </th>
+   <th style="text-align:right;"> Cluster2 </th>
+   <th style="text-align:right;"> Coeficientes </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> -18 </td>
+   <td style="text-align:right;"> -33 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> -19 </td>
+   <td style="text-align:right;"> -34 </td>
+   <td style="text-align:right;"> 0.1414214 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> -17 </td>
+   <td style="text-align:right;"> -32 </td>
+   <td style="text-align:right;"> 0.1414214 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> -16 </td>
+   <td style="text-align:right;"> -31 </td>
+   <td style="text-align:right;"> 0.1414214 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 5 </td>
+   <td style="text-align:right;"> -20 </td>
+   <td style="text-align:right;"> -35 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 6 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.3458035 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 7 </td>
+   <td style="text-align:right;"> -23 </td>
+   <td style="text-align:right;"> -27 </td>
+   <td style="text-align:right;"> 0.3464102 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 8 </td>
+   <td style="text-align:right;"> -21 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 9 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> -26 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:right;"> -11 </td>
+   <td style="text-align:right;"> -14 </td>
+   <td style="text-align:right;"> 0.3741657 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 11 </td>
+   <td style="text-align:right;"> -15 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0.3827772 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 12 </td>
+   <td style="text-align:right;"> -22 </td>
+   <td style="text-align:right;"> -29 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 13 </td>
+   <td style="text-align:right;"> -13 </td>
+   <td style="text-align:right;"> -30 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 14 </td>
+   <td style="text-align:right;"> -2 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.4236068 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 15 </td>
+   <td style="text-align:right;"> -4 </td>
+   <td style="text-align:right;"> -5 </td>
+   <td style="text-align:right;"> 0.4242641 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:right;"> -12 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 17 </td>
+   <td style="text-align:right;"> -6 </td>
+   <td style="text-align:right;"> -24 </td>
+   <td style="text-align:right;"> 0.4472136 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 18 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.4502587 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 19 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.4527575 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 20 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> -25 </td>
+   <td style="text-align:right;"> 0.4560160 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 21 </td>
+   <td style="text-align:right;"> -3 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0.4581276 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 22 </td>
+   <td style="text-align:right;"> -1 </td>
+   <td style="text-align:right;"> -10 </td>
+   <td style="text-align:right;"> 0.4690416 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 23 </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.4793127 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 24 </td>
+   <td style="text-align:right;"> -9 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 0.4805042 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 25 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 0.4850306 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 26 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.4988372 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 27 </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> -8 </td>
+   <td style="text-align:right;"> 0.4990959 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 28 </td>
+   <td style="text-align:right;"> 23 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 0.5054415 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 29 </td>
+   <td style="text-align:right;"> -7 </td>
+   <td style="text-align:right;"> -28 </td>
+   <td style="text-align:right;"> 0.5099020 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 30 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> 0.5201551 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 31 </td>
+   <td style="text-align:right;"> 29 </td>
+   <td style="text-align:right;"> 25 </td>
+   <td style="text-align:right;"> 0.5211280 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 32 </td>
+   <td style="text-align:right;"> 27 </td>
+   <td style="text-align:right;"> 31 </td>
+   <td style="text-align:right;"> 0.5437994 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 33 </td>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:right;"> 32 </td>
+   <td style="text-align:right;"> 0.6965222 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 34 </td>
+   <td style="text-align:right;"> 30 </td>
+   <td style="text-align:right;"> 33 </td>
+   <td style="text-align:right;"> 0.7160760 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p><strong>Interpretação da tabela</strong></p>
+<ul>
+<li><p>Na primeira linha, que é o estágio 1de aglomeração, a observação 18 foi juntada à observação 33 na altura 0.</p></li>
+<li><p>Na segunda linha, que é o estágio 2 da aglomeração, a observação 19 foi juntada à observação 34 na altura 0.1414214.</p></li>
+<li><p>A primeira vez que uma nova observação é adicionada a um <em>cluster</em> é na sexta linha, que é o estágio 6 da aglomeração, em que <em>cluster</em> gerado no estágio 3 é unido ao <em>cluster</em> gerador 2 na altura 0,3458035.</p></li>
+</ul>
+</section>
+<section id="construção-do-dendrograma" class="level4">
+<h4 class="anchored" data-anchor-id="construção-do-dendrograma">Construção do dendrograma</h4>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-11_898abd5f4c907745a4618f81fa4f6436">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#dev.off()</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_dend</span>(<span class="at">x =</span> cluster_hier)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+"none")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="mod1_01_03_analise_de_clusters_binarias_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Dendrograma de dados binários, usando medida de emparelhamento simples, transformada em medida de dissimilaridades e métodos de encadeamento <em>average linkage</em>.</p>
+<p>É possível observar que os saltos de formação dos <em>clusters</em> não são muito grandes.</p>
+<p>Arbitrariamente foi definido um corte na altura do 0,7, o que resulta em <em>3 clusters:</em></p>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-12_9c69fef8f7ce28509b1f0c4c9b8c42eb">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_dend</span>(<span class="at">x =</span> cluster_hier,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">h =</span> <span class="fl">0.7</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k_colors =</span> <span class="fu">c</span>(<span class="st">"deeppink4"</span>, <span class="st">"darkviolet"</span>, <span class="st">"deeppink"</span>),</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">color_labels_by_k =</span> F,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">rect =</span> T,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rect_fill =</span> T,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="dv">1</span>,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> <span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+"none")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="mod1_01_03_analise_de_clusters_binarias_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="dendrograma-com-visualização-dos-clusters" class="level4">
+<h4 class="anchored" data-anchor-id="dendrograma-com-visualização-dos-clusters">Dendrograma com visualização dos clusters</h4>
+<p>Parametrizando 3 clusters para comparar com a variável setores</p>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-13_eeaea04ea20bff2fbf517e74fd7a458f">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_dend</span>(<span class="at">x =</span> cluster_hier,</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k_colors =</span> <span class="fu">c</span>(<span class="st">"deeppink4"</span>, <span class="st">"darkviolet"</span>, <span class="st">"deeppink"</span>),</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">color_labels_by_k =</span> F,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">rect =</span> T,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rect_fill =</span> T,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="dv">1</span>,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> <span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+"none")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="mod1_01_03_analise_de_clusters_binarias_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados" class="level4">
+<h4 class="anchored" data-anchor-id="criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados">Criando variável categórica para indicação do cluster no banco de dados</h4>
+<p>O argumento ‘k’ indica a quantidade de clusters</p>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-14_68ba76738d43efb17a93223ec96c04ea">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>PesquisaBinária<span class="sc">$</span>cluster_H <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">cutree</span>(<span class="at">tree =</span> cluster_hier, <span class="at">k =</span> <span class="dv">3</span>))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>PesquisaBinária[, <span class="fu">c</span>(<span class="st">'setor'</span>, <span class="st">'cluster_H'</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 35 × 2
+   setor          cluster_H
+   &lt;dbl+lbl&gt;      &lt;fct&gt;    
+ 1 1 [saúde]      1        
+ 2 2 [educação]   2        
+ 3 2 [educação]   2        
+ 4 3 [transporte] 3        
+ 5 3 [transporte] 3        
+ 6 2 [educação]   2        
+ 7 3 [transporte] 3        
+ 8 3 [transporte] 3        
+ 9 1 [saúde]      1        
+10 1 [saúde]      1        
+# … with 25 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="visualização-da-base-de-dados-com-a-alocação-das-observações-nos-clusters" class="level4">
+<h4 class="anchored" data-anchor-id="visualização-da-base-de-dados-com-a-alocação-das-observações-nos-clusters">Visualização da base de dados com a alocação das observações nos clusters</h4>
+<div class="cell" data-hash="mod1_01_03_analise_de_clusters_binarias_cache/html/unnamed-chunk-15_de61f68466aa20d37c564cb57b95412f">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>PesquisaBinária <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(setor, cluster_H) <span class="sc">%&gt;%</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(setor) <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">font_size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped" style="font-size: 20px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> setor </th>
+   <th style="text-align:left;"> cluster_H </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Observa-se que as respostas são altamente influenciáveis pelo setor, pois os respondente de cada setor ficaram alocados nos mesmos <em>clusters</em>.</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./mod1_01_02_analise_de_cluster_paises.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Exemplo Países</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./mod1_01_04_analise_de_cluster_varejistas.html" class="pagination-link">
+        <span class="nav-page-text">Exemplo Varejistas</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,501 @@
+---
+author: "Luiz Favaro"
+format: html
+editor: visual
+---
+
+# Exemplo Varejistas {.unnumbered}
+
+**Curso**: MBA DSA USP ESALQ
+
+**Aula:** Unsupervised Machine Learning - Clustering II
+
+**Prof.**: Wilson Tarantin Jr.
+
+**Fonte**: Fávero e Belfiore, MANUAL DE ANÁLISE DE DADOS, Capítulo 09
+
+**Objetivo**: clusterizar um dataset com 18 observações com 5 variáveis de uma rede varejista com 18 lojas, divididas em 3 regionais.
+
+## Preparação
+
+### Instalação e carregamento dos pacotes utilizados
+
+```{r}
+pacotes <- c("plotly", #plataforma gráfica
+             "tidyverse", #carregar outros pacotes do R
+             "ggrepel", #geoms de texto e rótulo para 'ggplot2' que ajudam a #evitar sobreposição de textos
+
+             "knitr", "kableExtra", #formatação de tabelas
+             "reshape2", #função 'melt'
+             "misc3d", #gráficos 3D
+             "plot3D", #gráficos 3D
+             "cluster", #função 'agnes' para elaboração de clusters hierárquicos
+             "factoextra", #função 'fviz_dend' para construção de dendrogramas
+             "ade4") #função 'ade4' para matriz de distâncias em var. binárias
+
+if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
+  instalador <- pacotes[!pacotes %in% installed.packages()]
+  for(i in 1:length(instalador)) {
+    install.packages(instalador, dependencies = T)
+    break()}
+  sapply(pacotes, require, character = T) 
+} else {
+  sapply(pacotes, require, character = T) 
+}
+```
+
+### Carregamento da base de dados
+
+```{r}
+load(file = "./data/mod1_01_04_regiona_varejista.RData")
+```
+
+### Contexto
+
+Notas médias de cada uma das 18 lojas para os 3 atributos medidos
+
+As lojas estão divididas em 3 regionais
+
+### Visualização da base de dados
+
+```{r}
+RegionalVarejista %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", 
+                full_width = FALSE,
+                font_size = 20)
+```
+
+### Gráfico 3D com scatter
+
+```{r}
+rownames(RegionalVarejista) <- RegionalVarejista$loja
+
+scatter3D(x=RegionalVarejista$atendimento,
+          y=RegionalVarejista$sortimento,
+          z=RegionalVarejista$organização,
+          phi = 0, bty = "g", pch = 20, cex = 2,
+          xlab = "Atendimento",
+          ylab = "Sortimento",
+          zlab = "Organização",
+          main = "Lojas",
+          clab = "Notas Médias")>
+  text3D(x=RegionalVarejista$atendimento,
+         y=RegionalVarejista$sortimento,
+         z=RegionalVarejista$organização,
+         labels = rownames(RegionalVarejista),
+         add = TRUE, cex = 1)
+```
+
+No estão as 18 lojas distribuiídas em 3 eixos: atendimento, organização e sortimento.
+
+Conclusões a cerca das informações presentes no gráfico:
+
+-   É possível em ver que no canto inferior esquerdo há um grupo de lojas que naturalmente formam um *cluster*: organização, atendimento e sortimento ruins.
+
+-   Os pontos superiores em vermelhos (escuro e claro) parecem formar um segundo *cluster* e as outras lojas em azul e verde formal um terceiro *cluster.*
+
+### Estatísticas descritivas
+
+```{r}
+summary(RegionalVarejista$atendimento)
+```
+
+```{r}
+summary(RegionalVarejista$sortimento)
+```
+
+```{r}
+summary(RegionalVarejista$organização)
+```
+
+É possível observar que para as 3 variáveis as medianas se diferenciam muito da média, provavelmente provocadas por aquelas lojas em azul no gráfico 3D que possuem valore muito baixos.
+
+### Padronização
+
+Neste caso, não faremos a padronização. As variáveis já estão na mesma escala
+
+## Esquema de aglomeração hierárquico
+
+### Matriz de dissimilaridades
+
+Cria a matriz de distância usando o método **euclidiano**.
+
+```{r}
+matriz_D <- RegionalVarejista %>% 
+  select(atendimento, sortimento, organização) %>% 
+  dist(method = "euclidean")
+```
+
+> `Method`: parametrização da distância a ser utilizada
+>
+> -   "euclidean": distância euclidiana
+>
+> -   "euclidiana quadrática": elevar ao quadrado matriz_D (matriz_D\^2)
+>
+> -   "maximum": distância de Chebychev;
+>
+> -   "manhattan": distância de Manhattan (ou distância absoluta ou bloco);
+>
+> -   "canberra": distância de Canberra;
+>
+> -   "minkowski": distância de Minkowski
+
+### Visualizando a matriz de dissimilaridades
+
+```{r}
+data.matrix(matriz_D) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped",
+  full_width = FALSE,
+  font_size = 20)
+```
+
+### Elaboração da clusterização hierárquica
+
+Realiza a clusterização hierárquica usando o método *single linkage* (vizinhos mais próximos).
+
+```{r}
+cluster_hier <- agnes(x = matriz_D, method = "single")
+cluster_hier
+```
+
+`Method` é o tipo de encadeamento:
+
+-   "complete": encadeamento completo (furthest neighbor ou complete linkage)
+
+-   "single": encadeamento único (nearest neighbor ou single linkage)
+
+-   "average": encadeamento médio (between groups ou average linkage)
+
+### Definição do esquema hierárquico de aglomeração
+
+As distâncias (alturas para dendrograma) para as combinações em cada estágio.
+
+```{r}
+coeficientes <- sort(cluster_hier$height, decreasing = FALSE)
+coeficientes
+```
+
+#### Tabela com o esquema de aglomeração.
+
+> Interpretação do output:
+>
+> As linhas são os estágios de aglomeração
+>
+> -   Nas colunas Cluster1 e Cluster2, observa-se como ocorreu a junção
+>
+> -   Quando for número negativo, indica observação isolada
+>
+> -   Quando for número positivo, indica cluster formado anteriormente (estágio)
+>
+> -   Coeficientes: as distâncias para as combinações em cada estágio
+
+```{r}
+esquema <- as.data.frame(cbind(cluster_hier$merge, coeficientes))
+names(esquema) <- c("Cluster1", "Cluster2", "Coeficientes")
+```
+
+#### Visualização do esquema hierárquico de aglomeração
+
+```{r}
+esquema %>%
+  kable(row.names = T) %>%
+  kable_styling(bootstrap_options = "striped",
+  full_width = FALSE,
+  font_size = 20)
+```
+
+**Interpretação da tabela**
+
+Vemos que várias observações se unem na altura 2. Provavelmente se referem àquelas
+
+Na primeira linha, que é o estágio 1de aglomeração, a observação 8 foi juntada à observação 18 na altura 2.
+
+Na segunda linha, que é o estágio 2 da aglomeração, a observação 4 foi juntada à observação 16 na altura 2.
+
+A primeira vez que uma nova observação é adicionada a um cluster é na teceira linha, que é o estágio 3 da aglomeração, em que *cluster* gerado no estágio 2 é unido recebe a observação 9, também na altura 2.
+
+### Dendrograma
+
+#### Construção do dendrograma
+
+```{r}
+#dev.off()
+fviz_dend(x = cluster_hier)
+```
+
+**Interpretação do gráfico**
+
+1.  Vemos de fato a formação de um *cluster* formado pelas ligações abaixo da altura 6,6, onde a observação 2 se liga ao *cluster*, confirmando o gráfico 3D do início.
+2.  Fazendo um corte na altura do 39, temos 3 *clusters*, um em que a observação 13 é a última a ser adicionada ao *cluster* e outro em que a observação 14 é a última a ser adicionada em outro *cluster*.
+3.  O *cluster* 2 acaba ficando com lojas um pouco distintas, pois a observação se junta à ele numa altura muito alta, o que representa que ela é bem diferente.
+4.  Se o corte fosse traçado 33, os *clusters* ficariam mais homogêneos, com as obervações 13 e 14 formando *clusters* de uma única observação.
+
+#### Dendrograma com visualização dos clusters
+
+Definindo 3 clusters para comparar com regionais
+
+```{r}
+fviz_dend(x = cluster_hier,
+  k = 3,
+  k_colors = c("deeppink4", "darkviolet", "deeppink"),
+  color_labels_by_k = F,
+  rect = T,
+  rect_fill = T,
+  lwd = 1,
+  ggtheme = theme_bw())
+
+
+```
+
+### Criando variável categórica para indicação do cluster no banco de dados
+
+O argumento 'k' indica a quantidade de clusters
+
+```{r}
+RegionalVarejista$cluster_H <- factor(cutree(tree = cluster_hier, k = 3))
+```
+
+### Visualização da base de dados com a alocação das observações nos clusters
+
+```{r}
+RegionalVarejista %>%
+  select(regional, cluster_H) %>%
+  arrange(regional) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped",
+  full_width = FALSE,
+  font_size = 20)
+```
+
+**Conclusão:** as lojas das mesmas regionais caíram nos mesmos *clusters.*
+
+### Estatísticas descritivas dos clusters por variável
+
+Estudando mais profundamente as variáveis por *cluster.*
+
+#### Variável 'atendimento'
+
+```{r}
+group_by(RegionalVarejista, cluster_H) %>%
+  summarise(
+  mean = mean(atendimento, na.rm = TRUE),
+  sd = sd(atendimento, na.rm = TRUE),
+  min = min(atendimento, na.rm = TRUE),
+  max = max(atendimento, na.rm = TRUE))
+```
+
+#### Variável 'sortimento'
+
+```{r}
+group_by(RegionalVarejista, cluster_H) %>%
+  summarise(
+  mean = mean(sortimento, na.rm = TRUE),
+  sd = sd(sortimento, na.rm = TRUE),
+  min = min(sortimento, na.rm = TRUE),
+  max = max(sortimento, na.rm = TRUE))
+```
+
+#### Variável 'organização'
+
+```{r}
+group_by(RegionalVarejista, cluster_H) %>%
+  summarise(
+  mean = mean(organização, na.rm = TRUE),
+  sd = sd(organização, na.rm = TRUE),
+  min = min(organização, na.rm = TRUE),
+  max = max(organização, na.rm = TRUE))
+```
+
+**Análise das variáveis:**
+
+1.  As lojas do *cluster* 1 possuem as menores médias nas 3 variáveis. São as lojas azuis no gráfico 3D do início deste documento.
+2.  As lojas do *cluster* 2 possuem notas médias no atendimento e no sortimento, mas se destacam na organização, enquanto as lojas do *cluster* 3 tem notas médias em atendimento e organização, mas se destacam no sortimento.
+3.  Conclui-se que para melhoria da rede, as lojas do *cluster* 1 precisam melhorar nos 3 quesitos, enquanto que as lojas do *cluster* 2 precisam melhorar no atendimento e no sortimento e o *cluster* 3 precisa melhorar em atendimento e organização.
+
+### Análise de variância de um fator (ANOVA)
+
+**Objetivo:** verificar quais variáveis são importantes para a formação de pelo menos um *cluster.*
+
+Basicamente trata-se verificar se o p-valor da tabela (na coluna Pr(\>F)) é menor que 0,05 para que uma variável seja estatisticamente significante para formar um *cluster*.
+
+> **Interpretação do *output* das ANOVAs das tabelas a seguir:**
+>
+> **Passo1:** a linha **Mean Sq do cluster_H** indica a variabilidade entre grupos. Trata-se da soma dos quadrados.
+>
+> **Passo2:** a linha **Mean Sq dos Residuals** indica a variabilidade dentro dos grupos. Também é soma dos quadrados dos resíduos
+>
+> **Passo3:** o **F value** é estatística de teste, oriunda da razão entre as médias ($\dfrac{\text{Sum Sq do cluster\_H}}{\text{Sum Sq dos Residuals}$)
+>
+> **Passo 4: Pr(\>F**): p-valor da estatística F do passo 3
+>
+> -   Se **p-valor \< 0.05**: pelo menos um *cluster* apresenta média estatisticamente diferente dos demais
+>
+> **Passo 5:** A variável mais discriminante dos grupos contém maior estatística F (e significativa)
+
+#### ANOVA da variável 'atendimento'
+
+```{r}
+summary(anova_atendimento <- aov(formula = atendimento ~ cluster_H,
+data = RegionalVarejista))
+```
+
+P-valor= 2.06e-07, portanto menor que 0,05, o que significa que a variável **atendimento** é estatisticamente relevante para formar ao menos 1 *cluster*.
+
+#### ANOVA da variável 'sortimento'
+
+```{r}
+summary(anova_sortimento <- aov(formula = sortimento ~ cluster_H,
+data = RegionalVarejista))
+```
+
+P-valor= 1.08e-09, portanto menor que 0,05, o que significa que a variável **sortimento** é estatisticamente relevante para formar ao menos 1 *cluster*.
+
+#### ANOVA da variável 'organização'
+
+```{r}
+summary(anova_organiza <- aov(formula = organização ~ cluster_H,
+data = RegionalVarejista))
+```
+
+P-valor= 9.1e-14, portanto menor que 0,05, o que significa que a variável **organização** é estatisticamente relevante para formar ao menos 1 *cluster*.
+
+------------------------------------------------------------------------
+
+Em ordem de importância, a variável **orgnanização** é a que mais auxiliou na formação dos *clusters*, com uma estatística F de 403,5, seguida pela variável **sortimento** com uma estatística F de 110,2 e por fim a variável **atendimento**, com uma estatística F de 50,91.
+
+### Análise de Robustez
+
+Vamos realizar uma análise de robustez do resultado anterior.
+
+Vamos alterar a medida de distância de **euclidiana** para ***Manhattan*** e o método de encadeamento de ***single linkage*** para ***complete linkage***.
+
+#### Elaboração da matriz de distâncias com a distância de 'Manhattan'
+
+```{r}
+matriz_DM <- RegionalVarejista %>%
+  select(atendimento, sortimento, organização) %>%
+  dist(method = "manhattan")
+```
+
+#### Clusterização hierárquica com método 'complete'
+
+```{r}
+cluster_hier_man <- agnes(x = matriz_DM, method = "complete")
+cluster_hier_man
+```
+
+#### Construção do dendrograma
+
+```{r}
+#dev.off()
+fviz_dend(x = cluster_hier_man)
+```
+
+De fato, o resultado também aponta para 3 clusters
+
+### Definindo 3 clusters para comparar com regionais
+
+```{r}
+fviz_dend(x = cluster_hier_man,
+  k = 3,
+  k_colors = c("deeppink4", "darkviolet", "deeppink"),
+  color_labels_by_k = F,
+  rect = T,
+  rect_fill = T,
+  lwd = 1,
+  ggtheme = theme_bw())
+```
+
+### Adicionando a variável ao banco de dados
+
+```{r}
+RegionalVarejista$cluster_H_man <- factor(cutree(tree = cluster_hier_man, k = 3))
+```
+
+Para este caso, gera exatamente o mesmo resultado, o que significa que é uma clusterização robusta, isto é, que não se altera de acordo com o tipo de distância e o método de *linkage* escolhidos.
+
+## Esquema de aglomeração não hierárquico K-MEANS
+
+O KMeans minimiza a soma dos quadrados internos de cada *cluster*.
+
+### Elaboração da clusterização não hieráquica k-means
+
+Realizando a clusterização usando o número de *clusters* definidos na clusterização hierárquia como parâmetro de entrada no KMeans.
+
+```{r}
+cluster_kmeans <- kmeans(RegionalVarejista[,3:5], centers = 3)
+cluster_kmeans
+```
+
+### Criando variável categórica para indicação do cluster no banco de dados
+
+```{r}
+RegionalVarejista$cluster_K <- factor(cluster_kmeans$cluster)
+RegionalVarejista$cluster_K 
+```
+
+### Método de Elbow para identificação do número ótimo de clusters
+
+Checando quantos grupos o método *Elbow* recomenda.
+
+```{r}
+fviz_nbclust(RegionalVarejista[,3:5], kmeans, method = "wss", k.max = 10)
+```
+
+É possível observar que há uma susbtancial queda na soma dos quadrados internos das observações até a quantidade de *clusters* ser 3, a partir disso o aumento na quantidade *clusters* não altera muito.
+
+### Visualização da base de dados
+
+```{r}
+RegionalVarejista %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped",
+  full_width = FALSE,
+  font_size = 20)
+```
+
+Observa-se que os membros dos clusters pela clusterização hierárquica são os mesmo que os dos clusters definidos por KMeans, que por sua vez são os mesmos determinados pelas regionais.
+
+### Análise de variância de um fator (ANOVA)
+
+Utilizando ANOVA para verificar quais variáveis foram relevantes para a formação de pelo menos 1 *cluster*.
+
+#### ANOVA da variável 'atendimento'
+
+```{r}
+summary(anova_atendimento <- aov(
+  formula = atendimento ~ cluster_K,
+  data = RegionalVarejista))
+```
+
+#### ANOVA da variável 'sortimento'
+
+```{r}
+summary(anova_sortimento <- aov(formula = sortimento ~ cluster_K,
+  data = RegionalVarejista))
+```
+
+#### ANOVA da variável 'organização'
+
+```{r}
+summary(anova_organiza <- aov(formula = organização ~ cluster_K,
+  data = RegionalVarejista))
+```
+
+**Conclusão:** como na clusterização hierárquica, as 3 variáveis são relevantes para a formação de ao menos um *cluster* (todas com Pr(\>F) menor que 0,05), sendo a mais relevante é a **organização** (com maior F value - 403,5) e a variável **atendimento** (com menor F value - 50,91) é a menos relevante.
+
+## Comparando os resultados dos esquemas hierárquico e não hierárquico
+
+```{r}
+RegionalVarejista %>%
+  select(regional, cluster_H, cluster_K) %>%
+  arrange(regional) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped",
+  full_width = FALSE,
+  font_size = 20)
+```
+
+FIM!

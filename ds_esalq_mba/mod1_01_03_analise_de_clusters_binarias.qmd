@@ -1,0 +1,226 @@
+---
+author: "Luiz Favaro"
+format: html
+editor: visual
+---
+
+# Exemplo Pesquisa Binária {.unnumbered}
+
+**Curso**: MBA DSA USP ESALQ
+
+**Aula:** Unsupervised Machine Learning - Clustering II
+
+**Prof.**: Wilson Tarantin Jr.
+
+**Fonte**: Fávero e Belfiore, MANUAL DE ANÁLISE DE DADOS, Capítulo 09
+
+**Objetivo:** categorizar pessoas conforme respostas a questões com respostas binárias (sim = 1 e não = 0)
+
+## Preparação
+
+### Instalação e carregamento dos pacotes utilizados
+
+```{r}
+pacotes <- c("plotly", #plataforma gráfica
+             "tidyverse", #carregar outros pacotes do R
+             "ggrepel", #geoms de texto e rótulo para 'ggplot2' que ajudam a evitar sobreposição de textos
+             "knitr", "kableExtra", #formatação de tabelas
+             "reshape2", #função 'melt'
+             "misc3d", #gráficos 3D
+             "plot3D", #gráficos 3D
+             "cluster", #função 'agnes' para elaboração de clusters hierárquicos
+             "factoextra", #função 'fviz_dend' para construção de dendrogramas
+             "ade4") #função 'ade4' para matriz de distâncias em var. binárias
+if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
+  instalador <- pacotes[!pacotes %in% installed.packages()]
+  for(i in 1:length(instalador)) {
+    install.packages(instalador, dependencies = T)
+    break()}
+  sapply(pacotes, require, character = T) 
+} else {
+  sapply(pacotes, require, character = T) 
+}
+```
+
+### Carregamento da base de dados
+
+```{r}
+load(file = "./data/mod1_01_03_pesquisa_binaria.RData")
+```
+
+#### Contexto
+
+São respostas binárias para 50 perguntas de 35 respondentes.
+
+Os respondentes são gestores de empresas em 3 setores distintos.
+
+### Visualização da base de dados
+
+```{r}
+PesquisaBinária
+```
+
+```{r}
+# Contagem das categorias (zeros e uns) por variável
+vetor_var <- names(PesquisaBinária)
+result <- map(PesquisaBinária[vetor_var], ~ summary(as.factor(.)))
+result
+```
+
+> **Exemplo de interpretação:**
+>
+> -   na questão 49, 27 responderam "não" (zero) e 8 responderam que sim (um).
+>
+> -   na questão 50, 11 responderam "não" (zero) e 24 responderam que sim (um).
+>
+> -   no setor, 11 são do setor 1, 2
+
+## Esquema de aglomeração hierárquico
+
+### Matriz de dissimilaridades
+
+```{r}
+matriz_D <- PesquisaBinária %>% 
+  select(-setor) %>% 
+  dist.binary(method = 2)
+```
+
+Em `dist.binary`, `method = 2` indica similaridade por emparelhamento simples.
+
+O resultado na variável `matriz_D` é a matriz de dissimilaridade, com as **similaridade spor emparelhamento simples** já convertidas para distâncias, usando $\sqrt{s-1}$.
+
+### Visualizando a matriz de dissimilaridades
+
+```{r}
+data.matrix(matriz_D) %>% 
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", 
+                full_width = FALSE, 
+                font_size = 20)
+```
+
+### Elaboração da clusterização hierárquica
+
+```{r}
+cluster_hier <- agnes(x = matriz_D, method = "average")
+cluster_hier
+```
+
+### Outras opções de encadeamento:
+
+-   `complete`: encadeamento completo (furthest neighbor ou complete linkage)
+-   `single`: encadeamento único (nearest neighbor ou single linkage)
+-   `average`: encadeamento médio (between groups ou average linkage)
+
+### Definição do esquema hierárquico de aglomeração
+
+As distâncias para as combinações em cada estágio
+
+```{r}
+coeficientes <- sort(cluster_hier$height, decreasing = FALSE) 
+coeficientes
+```
+
+Os coeficientes mostram todas as distâncias em que as observações foram unidas.
+
+### Interpretação do output
+
+#### Tabela com o esquema de aglomeração.
+
+As linhas são os estágios de aglomeração.
+
+Nas colunas Cluster1 e Cluster2, observa-se como ocorreu a junção.
+
+-   Quando for número negativo, indica observação isolada
+
+-   Quando for número positivo, indica cluster formado anteriormente (estágio)
+
+-   Coeficientes: as distâncias para as combinações em cada estágio
+
+```{r}
+esquema <- as.data.frame(cbind(cluster_hier$merge, coeficientes))
+names(esquema) <- c("Cluster1", "Cluster2", "Coeficientes")
+esquema
+
+
+```
+
+#### Visualização do esquema hierárquico de aglomeração
+
+```{r}
+esquema %>%
+  kable(row.names = T) %>%
+  kable_styling(bootstrap_options = "striped",
+  full_width = FALSE,
+  font_size = 20)
+```
+
+**Interpretação da tabela**
+
+-   Na primeira linha, que é o estágio 1de aglomeração, a observação 18 foi juntada à observação 33 na altura 0.
+
+-   Na segunda linha, que é o estágio 2 da aglomeração, a observação 19 foi juntada à observação 34 na altura 0.1414214.
+
+-   A primeira vez que uma nova observação é adicionada a um *cluster* é na sexta linha, que é o estágio 6 da aglomeração, em que *cluster* gerado no estágio 3 é unido ao *cluster* gerador 2 na altura 0,3458035.
+
+#### Construção do dendrograma
+
+```{r}
+#dev.off()
+fviz_dend(x = cluster_hier)
+```
+
+Dendrograma de dados binários, usando medida de emparelhamento simples, transformada em medida de dissimilaridades e métodos de encadeamento *average linkage*.
+
+É possível observar que os saltos de formação dos *clusters* não são muito grandes.
+
+Arbitrariamente foi definido um corte na altura do 0,7, o que resulta em *3 clusters:*
+
+```{r}
+fviz_dend(x = cluster_hier,
+  h = 0.7,
+  k_colors = c("deeppink4", "darkviolet", "deeppink"),
+  color_labels_by_k = F,
+  rect = T,
+  rect_fill = T,
+  lwd = 1,
+  ggtheme = theme_bw())
+```
+
+#### Dendrograma com visualização dos clusters
+
+Parametrizando 3 clusters para comparar com a variável setores
+
+```{r}
+fviz_dend(x = cluster_hier,
+  k = 3,
+  k_colors = c("deeppink4", "darkviolet", "deeppink"),
+  color_labels_by_k = F,
+  rect = T,
+  rect_fill = T,
+  lwd = 1,
+  ggtheme = theme_bw())
+```
+
+#### Criando variável categórica para indicação do cluster no banco de dados
+
+O argumento 'k' indica a quantidade de clusters
+
+```{r}
+PesquisaBinária$cluster_H <- factor(cutree(tree = cluster_hier, k = 3))
+PesquisaBinária[, c('setor', 'cluster_H')]
+```
+
+#### Visualização da base de dados com a alocação das observações nos clusters
+
+```{r}
+PesquisaBinária %>%
+  select(setor, cluster_H) %>%
+  arrange(setor) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped",
+  full_width = FALSE,
+  font_size = 20)
+```
+
+Observa-se que as respostas são altamente influenciáveis pelo setor, pois os respondente de cada setor ficaram alocados nos mesmos *clusters*.

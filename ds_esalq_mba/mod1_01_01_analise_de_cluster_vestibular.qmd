@@ -66,7 +66,7 @@ Vestibular %>%
                 font_size = 20)
 ```
 
-Os dados se constituem em 5 alunos e suas médias em 3 matérias: matemática, física e química.
+Os dados são compostos por 5 alunos e suas médias em 3 matérias: matemática, física e química.
 
 Renomeia linhas
 

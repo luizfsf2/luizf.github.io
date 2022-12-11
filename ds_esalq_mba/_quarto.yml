@@ -22,7 +22,9 @@ book:
         - mod1_01_00_clustering.qmd
         - mod1_01_01_analise_de_cluster_vestibular.qmd
         - mod1_01_02_analise_de_cluster_paises.qmd
-
+        - mod1_01_03_analise_de_clusters_binarias.qmd
+        - mod1_01_04_analise_de_cluster_varejistas.qmd
+        - mod1_01_05_analise_de_cluster_cartao.qmd
 
     # - intro.qmd
     # - summary.qmd
@@ -35,8 +37,12 @@ bibliography: references.bib
 format:
   html:
     theme: cosmo
-  pdf:
-    documentclass: scrreprt
+    code-copy: true
+    code-overflow: wrap
+  #pdf:
+  #  documentclass: scrreprt
 
 
-
+execute:
+  freeze: auto
+  cache: true

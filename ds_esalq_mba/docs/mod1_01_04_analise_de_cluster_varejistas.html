@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.113">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Luiz Favaro">
+
+<title>MBA Data Science - USP/ESALQ - Exemplo Varejistas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: 1;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./mod1_01_05_analise_de_cluster_cartao.html" rel="next">
+<link href="./mod1_01_03_analise_de_clusters_binarias.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Exemplo Varejistas</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">MBA Data Science - USP/ESALQ</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Módulo 0 - Nivelamento</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod0_01_intro_estatistica.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introdução à Estatística</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod0_02_intro_r.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introdução ao R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Módulo 1 - Unsupervised Machine Learning</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_00_clustering.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Clustering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_01_analise_de_cluster_vestibular.html" class="sidebar-item-text sidebar-link">Exemplo Vestibular</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_02_analise_de_cluster_paises.html" class="sidebar-item-text sidebar-link">Exemplo Países</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_03_analise_de_clusters_binarias.html" class="sidebar-item-text sidebar-link">Exemplo Pesquisa Binária</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_04_analise_de_cluster_varejistas.html" class="sidebar-item-text sidebar-link active">Exemplo Varejistas</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mod1_01_05_analise_de_cluster_cartao.html" class="sidebar-item-text sidebar-link">Exemplo Cartão de Crédito</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#preparação" id="toc-preparação" class="nav-link active" data-scroll-target="#preparação">Preparação</a>
+  <ul class="collapse">
+  <li><a href="#instalação-e-carregamento-dos-pacotes-utilizados" id="toc-instalação-e-carregamento-dos-pacotes-utilizados" class="nav-link" data-scroll-target="#instalação-e-carregamento-dos-pacotes-utilizados">Instalação e carregamento dos pacotes utilizados</a></li>
+  <li><a href="#carregamento-da-base-de-dados" id="toc-carregamento-da-base-de-dados" class="nav-link" data-scroll-target="#carregamento-da-base-de-dados">Carregamento da base de dados</a></li>
+  <li><a href="#contexto" id="toc-contexto" class="nav-link" data-scroll-target="#contexto">Contexto</a></li>
+  <li><a href="#visualização-da-base-de-dados" id="toc-visualização-da-base-de-dados" class="nav-link" data-scroll-target="#visualização-da-base-de-dados">Visualização da base de dados</a></li>
+  <li><a href="#gráfico-3d-com-scatter" id="toc-gráfico-3d-com-scatter" class="nav-link" data-scroll-target="#gráfico-3d-com-scatter">Gráfico 3D com scatter</a></li>
+  <li><a href="#estatísticas-descritivas" id="toc-estatísticas-descritivas" class="nav-link" data-scroll-target="#estatísticas-descritivas">Estatísticas descritivas</a></li>
+  <li><a href="#padronização" id="toc-padronização" class="nav-link" data-scroll-target="#padronização">Padronização</a></li>
+  </ul></li>
+  <li><a href="#esquema-de-aglomeração-hierárquico" id="toc-esquema-de-aglomeração-hierárquico" class="nav-link" data-scroll-target="#esquema-de-aglomeração-hierárquico">Esquema de aglomeração hierárquico</a>
+  <ul class="collapse">
+  <li><a href="#matriz-de-dissimilaridades" id="toc-matriz-de-dissimilaridades" class="nav-link" data-scroll-target="#matriz-de-dissimilaridades">Matriz de dissimilaridades</a></li>
+  <li><a href="#visualizando-a-matriz-de-dissimilaridades" id="toc-visualizando-a-matriz-de-dissimilaridades" class="nav-link" data-scroll-target="#visualizando-a-matriz-de-dissimilaridades">Visualizando a matriz de dissimilaridades</a></li>
+  <li><a href="#elaboração-da-clusterização-hierárquica" id="toc-elaboração-da-clusterização-hierárquica" class="nav-link" data-scroll-target="#elaboração-da-clusterização-hierárquica">Elaboração da clusterização hierárquica</a></li>
+  <li><a href="#definição-do-esquema-hierárquico-de-aglomeração" id="toc-definição-do-esquema-hierárquico-de-aglomeração" class="nav-link" data-scroll-target="#definição-do-esquema-hierárquico-de-aglomeração">Definição do esquema hierárquico de aglomeração</a></li>
+  <li><a href="#dendrograma" id="toc-dendrograma" class="nav-link" data-scroll-target="#dendrograma">Dendrograma</a></li>
+  <li><a href="#criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados" id="toc-criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados" class="nav-link" data-scroll-target="#criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados">Criando variável categórica para indicação do cluster no banco de dados</a></li>
+  <li><a href="#visualização-da-base-de-dados-com-a-alocação-das-observações-nos-clusters" id="toc-visualização-da-base-de-dados-com-a-alocação-das-observações-nos-clusters" class="nav-link" data-scroll-target="#visualização-da-base-de-dados-com-a-alocação-das-observações-nos-clusters">Visualização da base de dados com a alocação das observações nos clusters</a></li>
+  <li><a href="#estatísticas-descritivas-dos-clusters-por-variável" id="toc-estatísticas-descritivas-dos-clusters-por-variável" class="nav-link" data-scroll-target="#estatísticas-descritivas-dos-clusters-por-variável">Estatísticas descritivas dos clusters por variável</a></li>
+  <li><a href="#análise-de-variância-de-um-fator-anova" id="toc-análise-de-variância-de-um-fator-anova" class="nav-link" data-scroll-target="#análise-de-variância-de-um-fator-anova">Análise de variância de um fator (ANOVA)</a></li>
+  <li><a href="#análise-de-robustez" id="toc-análise-de-robustez" class="nav-link" data-scroll-target="#análise-de-robustez">Análise de Robustez</a></li>
+  <li><a href="#definindo-3-clusters-para-comparar-com-regionais" id="toc-definindo-3-clusters-para-comparar-com-regionais" class="nav-link" data-scroll-target="#definindo-3-clusters-para-comparar-com-regionais">Definindo 3 clusters para comparar com regionais</a></li>
+  <li><a href="#adicionando-a-variável-ao-banco-de-dados" id="toc-adicionando-a-variável-ao-banco-de-dados" class="nav-link" data-scroll-target="#adicionando-a-variável-ao-banco-de-dados">Adicionando a variável ao banco de dados</a></li>
+  </ul></li>
+  <li><a href="#esquema-de-aglomeração-não-hierárquico-k-means" id="toc-esquema-de-aglomeração-não-hierárquico-k-means" class="nav-link" data-scroll-target="#esquema-de-aglomeração-não-hierárquico-k-means">Esquema de aglomeração não hierárquico K-MEANS</a>
+  <ul class="collapse">
+  <li><a href="#elaboração-da-clusterização-não-hieráquica-k-means" id="toc-elaboração-da-clusterização-não-hieráquica-k-means" class="nav-link" data-scroll-target="#elaboração-da-clusterização-não-hieráquica-k-means">Elaboração da clusterização não hieráquica k-means</a></li>
+  <li><a href="#criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados-1" id="toc-criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados-1" class="nav-link" data-scroll-target="#criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados-1">Criando variável categórica para indicação do cluster no banco de dados</a></li>
+  <li><a href="#método-de-elbow-para-identificação-do-número-ótimo-de-clusters" id="toc-método-de-elbow-para-identificação-do-número-ótimo-de-clusters" class="nav-link" data-scroll-target="#método-de-elbow-para-identificação-do-número-ótimo-de-clusters">Método de Elbow para identificação do número ótimo de clusters</a></li>
+  <li><a href="#visualização-da-base-de-dados-1" id="toc-visualização-da-base-de-dados-1" class="nav-link" data-scroll-target="#visualização-da-base-de-dados-1">Visualização da base de dados</a></li>
+  <li><a href="#análise-de-variância-de-um-fator-anova-1" id="toc-análise-de-variância-de-um-fator-anova-1" class="nav-link" data-scroll-target="#análise-de-variância-de-um-fator-anova-1">Análise de variância de um fator (ANOVA)</a></li>
+  </ul></li>
+  <li><a href="#comparando-os-resultados-dos-esquemas-hierárquico-e-não-hierárquico" id="toc-comparando-os-resultados-dos-esquemas-hierárquico-e-não-hierárquico" class="nav-link" data-scroll-target="#comparando-os-resultados-dos-esquemas-hierárquico-e-não-hierárquico">Comparando os resultados dos esquemas hierárquico e não hierárquico</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Exemplo Varejistas</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Luiz Favaro </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<p><strong>Curso</strong>: MBA DSA USP ESALQ</p>
+<p><strong>Aula:</strong> Unsupervised Machine Learning - Clustering II</p>
+<p><strong>Prof.</strong>: Wilson Tarantin Jr.</p>
+<p><strong>Fonte</strong>: Fávero e Belfiore, MANUAL DE ANÁLISE DE DADOS, Capítulo 09</p>
+<p><strong>Objetivo</strong>: clusterizar um dataset com 18 observações com 5 variáveis de uma rede varejista com 18 lojas, divididas em 3 regionais.</p>
+<section id="preparação" class="level2">
+<h2 class="anchored" data-anchor-id="preparação">Preparação</h2>
+<section id="instalação-e-carregamento-dos-pacotes-utilizados" class="level3">
+<h3 class="anchored" data-anchor-id="instalação-e-carregamento-dos-pacotes-utilizados">Instalação e carregamento dos pacotes utilizados</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-1_53bc2ee289a95d6cb25af9ddd23593f5">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacotes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"plotly"</span>, <span class="co">#plataforma gráfica</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>             <span class="st">"tidyverse"</span>, <span class="co">#carregar outros pacotes do R</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>             <span class="st">"ggrepel"</span>, <span class="co">#geoms de texto e rótulo para 'ggplot2' que ajudam a #evitar sobreposição de textos</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>             <span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="co">#formatação de tabelas</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>             <span class="st">"reshape2"</span>, <span class="co">#função 'melt'</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>             <span class="st">"misc3d"</span>, <span class="co">#gráficos 3D</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>             <span class="st">"plot3D"</span>, <span class="co">#gráficos 3D</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>             <span class="st">"cluster"</span>, <span class="co">#função 'agnes' para elaboração de clusters hierárquicos</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>             <span class="st">"factoextra"</span>, <span class="co">#função 'fviz_dend' para construção de dendrogramas</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>             <span class="st">"ade4"</span>) <span class="co">#função 'ade4' para matriz de distâncias em var. binárias</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">sum</span>(<span class="fu">as.numeric</span>(<span class="sc">!</span>pacotes <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="sc">!=</span> <span class="dv">0</span>){</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  instalador <span class="ot">&lt;-</span> pacotes[<span class="sc">!</span>pacotes <span class="sc">%in%</span> <span class="fu">installed.packages</span>()]</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(instalador)) {</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(instalador, <span class="at">dependencies =</span> T)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span>()}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sapply</span>(pacotes, require, <span class="at">character =</span> T) </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sapply</span>(pacotes, require, <span class="at">character =</span> T) </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: plotly</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'plotly'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ggplot2':
+
+    last_plot</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    filter</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:graphics':
+
+    layout</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: tidyverse</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in system("timedatectl", intern = TRUE): running command 'timedatectl'
+had status 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages
+───────────────────────────────────────
+tidyverse 1.3.2 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+✔ readr   2.1.3      ✔ forcats 0.5.2 
+✔ purrr   0.3.4      
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks plotly::filter(), stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+Loading required package: ggrepel
+
+Loading required package: knitr
+
+Loading required package: kableExtra
+
+
+Attaching package: 'kableExtra'
+
+
+The following object is masked from 'package:dplyr':
+
+    group_rows
+
+
+Loading required package: reshape2
+
+
+Attaching package: 'reshape2'
+
+
+The following object is masked from 'package:tidyr':
+
+    smiths
+
+
+Loading required package: misc3d</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: no DISPLAY variable so Tk is not available</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: plot3D
+Loading required package: cluster
+Loading required package: factoextra
+Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa
+Loading required package: ade4</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    plotly  tidyverse    ggrepel      knitr kableExtra   reshape2     misc3d 
+      TRUE       TRUE       TRUE       TRUE       TRUE       TRUE       TRUE 
+    plot3D    cluster factoextra       ade4 
+      TRUE       TRUE       TRUE       TRUE </code></pre>
+</div>
+</div>
+</section>
+<section id="carregamento-da-base-de-dados" class="level3">
+<h3 class="anchored" data-anchor-id="carregamento-da-base-de-dados">Carregamento da base de dados</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-2_8a0992f3436fa4c14a9834b84d70f5d0">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">"./data/mod1_01_04_regiona_varejista.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="contexto" class="level3">
+<h3 class="anchored" data-anchor-id="contexto">Contexto</h3>
+<p>Notas médias de cada uma das 18 lojas para os 3 atributos medidos</p>
+<p>As lojas estão divididas em 3 regionais</p>
+</section>
+<section id="visualização-da-base-de-dados" class="level3">
+<h3 class="anchored" data-anchor-id="visualização-da-base-de-dados">Visualização da base de dados</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-3_543fb0aa32b528d8cad235c6cd2cd871">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>RegionalVarejista <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">font_size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped" style="font-size: 20px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> loja </th>
+   <th style="text-align:left;"> regional </th>
+   <th style="text-align:right;"> atendimento </th>
+   <th style="text-align:right;"> sortimento </th>
+   <th style="text-align:right;"> organização </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 04 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 05 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 06 </td>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:right;"> 38 </td>
+   <td style="text-align:right;"> 38 </td>
+   <td style="text-align:right;"> 100 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 07 </td>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:right;"> 40 </td>
+   <td style="text-align:right;"> 78 </td>
+   <td style="text-align:right;"> 38 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 08 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 09 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 11 </td>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:right;"> 54 </td>
+   <td style="text-align:right;"> 32 </td>
+   <td style="text-align:right;"> 86 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 12 </td>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:right;"> 52 </td>
+   <td style="text-align:right;"> 34 </td>
+   <td style="text-align:right;"> 98 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 13 </td>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:right;"> 76 </td>
+   <td style="text-align:right;"> 60 </td>
+   <td style="text-align:right;"> 88 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 14 </td>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:right;"> 78 </td>
+   <td style="text-align:right;"> 86 </td>
+   <td style="text-align:right;"> 38 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 15 </td>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:right;"> 54 </td>
+   <td style="text-align:right;"> 76 </td>
+   <td style="text-align:right;"> 58 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 17 </td>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:right;"> 52 </td>
+   <td style="text-align:right;"> 56 </td>
+   <td style="text-align:right;"> 46 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 18 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="gráfico-3d-com-scatter" class="level3">
+<h3 class="anchored" data-anchor-id="gráfico-3d-com-scatter">Gráfico 3D com scatter</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-4_efedd56228e70d63887d8734e21da670">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(RegionalVarejista) <span class="ot">&lt;-</span> RegionalVarejista<span class="sc">$</span>loja</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Setting row names on a tibble is deprecated.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter3D</span>(<span class="at">x=</span>RegionalVarejista<span class="sc">$</span>atendimento,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">y=</span>RegionalVarejista<span class="sc">$</span>sortimento,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">z=</span>RegionalVarejista<span class="sc">$</span>organização,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">phi =</span> <span class="dv">0</span>, <span class="at">bty =</span> <span class="st">"g"</span>, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">cex =</span> <span class="dv">2</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">xlab =</span> <span class="st">"Atendimento"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">ylab =</span> <span class="st">"Sortimento"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">zlab =</span> <span class="st">"Organização"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">main =</span> <span class="st">"Lojas"</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">clab =</span> <span class="st">"Notas Médias"</span>)<span class="sc">&gt;</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">text3D</span>(<span class="at">x=</span>RegionalVarejista<span class="sc">$</span>atendimento,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">y=</span>RegionalVarejista<span class="sc">$</span>sortimento,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">z=</span>RegionalVarejista<span class="sc">$</span>organização,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">labels =</span> <span class="fu">rownames</span>(RegionalVarejista),</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">cex =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="mod1_01_04_analise_de_cluster_varejistas_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      [,1]  [,2]  [,3]  [,4]
+[1,] FALSE FALSE FALSE FALSE
+[2,] FALSE FALSE FALSE FALSE
+[3,] FALSE FALSE FALSE FALSE
+[4,] FALSE FALSE FALSE FALSE</code></pre>
+</div>
+</div>
+<p>No estão as 18 lojas distribuiídas em 3 eixos: atendimento, organização e sortimento.</p>
+<p>Conclusões a cerca das informações presentes no gráfico:</p>
+<ul>
+<li><p>É possível em ver que no canto inferior esquerdo há um grupo de lojas que naturalmente formam um <em>cluster</em>: organização, atendimento e sortimento ruins.</p></li>
+<li><p>Os pontos superiores em vermelhos (escuro e claro) parecem formar um segundo <em>cluster</em> e as outras lojas em azul e verde formal um terceiro <em>cluster.</em></p></li>
+</ul>
+</section>
+<section id="estatísticas-descritivas" class="level3">
+<h3 class="anchored" data-anchor-id="estatísticas-descritivas">Estatísticas descritivas</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-5_f1716af1adcd97eeda2d5a809f5e7e39">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(RegionalVarejista<span class="sc">$</span>atendimento)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2.00    6.00   11.00   28.11   52.00   78.00 </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-6_4ea744a7dcbb49407deed5cdfce77747">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(RegionalVarejista<span class="sc">$</span>sortimento)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2.00    4.00    6.00   27.89   51.50   86.00 </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-7_51da3d8e9ceca7201c805dbdd2fe5849">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(RegionalVarejista<span class="sc">$</span>organização)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2.00    4.00    6.00   33.11   55.00  100.00 </code></pre>
+</div>
+</div>
+<p>É possível observar que para as 3 variáveis as medianas se diferenciam muito da média, provavelmente provocadas por aquelas lojas em azul no gráfico 3D que possuem valore muito baixos.</p>
+</section>
+<section id="padronização" class="level3">
+<h3 class="anchored" data-anchor-id="padronização">Padronização</h3>
+<p>Neste caso, não faremos a padronização. As variáveis já estão na mesma escala</p>
+</section>
+</section>
+<section id="esquema-de-aglomeração-hierárquico" class="level2">
+<h2 class="anchored" data-anchor-id="esquema-de-aglomeração-hierárquico">Esquema de aglomeração hierárquico</h2>
+<section id="matriz-de-dissimilaridades" class="level3">
+<h3 class="anchored" data-anchor-id="matriz-de-dissimilaridades">Matriz de dissimilaridades</h3>
+<p>Cria a matriz de distância usando o método <strong>euclidiano</strong>.</p>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-8_6ec5ac77c57099770c8f410e3587ac44">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>matriz_D <span class="ot">&lt;-</span> RegionalVarejista <span class="sc">%&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(atendimento, sortimento, organização) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dist</span>(<span class="at">method =</span> <span class="st">"euclidean"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p><code>Method</code>: parametrização da distância a ser utilizada</p>
+<ul>
+<li><p>“euclidean”: distância euclidiana</p></li>
+<li><p>“euclidiana quadrática”: elevar ao quadrado matriz_D (matriz_D^2)</p></li>
+<li><p>“maximum”: distância de Chebychev;</p></li>
+<li><p>“manhattan”: distância de Manhattan (ou distância absoluta ou bloco);</p></li>
+<li><p>“canberra”: distância de Canberra;</p></li>
+<li><p>“minkowski”: distância de Minkowski</p></li>
+</ul>
+</blockquote>
+</section>
+<section id="visualizando-a-matriz-de-dissimilaridades" class="level3">
+<h3 class="anchored" data-anchor-id="visualizando-a-matriz-de-dissimilaridades">Visualizando a matriz de dissimilaridades</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-9_eb65e1f54b9f65c81c9f7113a8d15530">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.matrix</span>(matriz_D) <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">font_size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped" style="font-size: 20px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> 1 </th>
+   <th style="text-align:right;"> 2 </th>
+   <th style="text-align:right;"> 3 </th>
+   <th style="text-align:right;"> 4 </th>
+   <th style="text-align:right;"> 5 </th>
+   <th style="text-align:right;"> 6 </th>
+   <th style="text-align:right;"> 7 </th>
+   <th style="text-align:right;"> 8 </th>
+   <th style="text-align:right;"> 9 </th>
+   <th style="text-align:right;"> 10 </th>
+   <th style="text-align:right;"> 11 </th>
+   <th style="text-align:right;"> 12 </th>
+   <th style="text-align:right;"> 13 </th>
+   <th style="text-align:right;"> 14 </th>
+   <th style="text-align:right;"> 15 </th>
+   <th style="text-align:right;"> 16 </th>
+   <th style="text-align:right;"> 17 </th>
+   <th style="text-align:right;"> 18 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 8.944272 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 106.13199 </td>
+   <td style="text-align:right;"> 86.57944 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 98.50888 </td>
+   <td style="text-align:right;"> 108.33282 </td>
+   <td style="text-align:right;"> 121.95081 </td>
+   <td style="text-align:right;"> 112.87161 </td>
+   <td style="text-align:right;"> 100.59821 </td>
+   <td style="text-align:right;"> 4.472136 </td>
+   <td style="text-align:right;"> 79.87490 </td>
+   <td style="text-align:right;"> 4.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 8.944272 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 6.633250 </td>
+   <td style="text-align:right;"> 10.198039 </td>
+   <td style="text-align:right;"> 9.165151 </td>
+   <td style="text-align:right;"> 105.29957 </td>
+   <td style="text-align:right;"> 87.22385 </td>
+   <td style="text-align:right;"> 8.246211 </td>
+   <td style="text-align:right;"> 10.392305 </td>
+   <td style="text-align:right;"> 9.165151 </td>
+   <td style="text-align:right;"> 96.04166 </td>
+   <td style="text-align:right;"> 106.32027 </td>
+   <td style="text-align:right;"> 119.43199 </td>
+   <td style="text-align:right;"> 110.94143 </td>
+   <td style="text-align:right;"> 99.95999 </td>
+   <td style="text-align:right;"> 12.165525 </td>
+   <td style="text-align:right;"> 78.25599 </td>
+   <td style="text-align:right;"> 8.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 6.633250 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 4.472136 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 104.36474 </td>
+   <td style="text-align:right;"> 86.74099 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 4.000000 </td>
+   <td style="text-align:right;"> 4.898980 </td>
+   <td style="text-align:right;"> 96.43651 </td>
+   <td style="text-align:right;"> 106.30146 </td>
+   <td style="text-align:right;"> 120.34949 </td>
+   <td style="text-align:right;"> 112.46333 </td>
+   <td style="text-align:right;"> 100.02000 </td>
+   <td style="text-align:right;"> 6.324555 </td>
+   <td style="text-align:right;"> 78.99367 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 10.198039 </td>
+   <td style="text-align:right;"> 4.472136 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 107.36852 </td>
+   <td style="text-align:right;"> 89.03932 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 100.03999 </td>
+   <td style="text-align:right;"> 109.72693 </td>
+   <td style="text-align:right;"> 124.00000 </td>
+   <td style="text-align:right;"> 115.56816 </td>
+   <td style="text-align:right;"> 102.95630 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 82.29216 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 9.165151 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 104.32641 </td>
+   <td style="text-align:right;"> 85.81375 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 4.000000 </td>
+   <td style="text-align:right;"> 96.85040 </td>
+   <td style="text-align:right;"> 106.60206 </td>
+   <td style="text-align:right;"> 120.58192 </td>
+   <td style="text-align:right;"> 112.28535 </td>
+   <td style="text-align:right;"> 99.53894 </td>
+   <td style="text-align:right;"> 4.898980 </td>
+   <td style="text-align:right;"> 78.84161 </td>
+   <td style="text-align:right;"> 4.472136 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 106.131993 </td>
+   <td style="text-align:right;"> 105.299573 </td>
+   <td style="text-align:right;"> 104.364745 </td>
+   <td style="text-align:right;"> 107.368524 </td>
+   <td style="text-align:right;"> 104.326411 </td>
+   <td style="text-align:right;"> 0.00000 </td>
+   <td style="text-align:right;"> 73.81057 </td>
+   <td style="text-align:right;"> 106.752049 </td>
+   <td style="text-align:right;"> 105.584090 </td>
+   <td style="text-align:right;"> 107.944430 </td>
+   <td style="text-align:right;"> 22.09072 </td>
+   <td style="text-align:right;"> 14.69694 </td>
+   <td style="text-align:right;"> 45.51923 </td>
+   <td style="text-align:right;"> 88.02272 </td>
+   <td style="text-align:right;"> 58.85576 </td>
+   <td style="text-align:right;"> 108.018517 </td>
+   <td style="text-align:right;"> 58.61740 </td>
+   <td style="text-align:right;"> 107.405773 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 86.579443 </td>
+   <td style="text-align:right;"> 87.223850 </td>
+   <td style="text-align:right;"> 86.740994 </td>
+   <td style="text-align:right;"> 89.039317 </td>
+   <td style="text-align:right;"> 85.813752 </td>
+   <td style="text-align:right;"> 73.81057 </td>
+   <td style="text-align:right;"> 0.00000 </td>
+   <td style="text-align:right;"> 88.249646 </td>
+   <td style="text-align:right;"> 88.294960 </td>
+   <td style="text-align:right;"> 87.384209 </td>
+   <td style="text-align:right;"> 67.94115 </td>
+   <td style="text-align:right;"> 75.36577 </td>
+   <td style="text-align:right;"> 64.18723 </td>
+   <td style="text-align:right;"> 38.83298 </td>
+   <td style="text-align:right;"> 24.49490 </td>
+   <td style="text-align:right;"> 89.866568 </td>
+   <td style="text-align:right;"> 26.30589 </td>
+   <td style="text-align:right;"> 89.933309 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 8.246211 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 106.75205 </td>
+   <td style="text-align:right;"> 88.24965 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 99.05554 </td>
+   <td style="text-align:right;"> 108.86689 </td>
+   <td style="text-align:right;"> 122.84950 </td>
+   <td style="text-align:right;"> 114.29786 </td>
+   <td style="text-align:right;"> 102.00000 </td>
+   <td style="text-align:right;"> 4.000000 </td>
+   <td style="text-align:right;"> 81.14185 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 10.392305 </td>
+   <td style="text-align:right;"> 4.000000 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 105.58409 </td>
+   <td style="text-align:right;"> 88.29496 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 4.898980 </td>
+   <td style="text-align:right;"> 98.40732 </td>
+   <td style="text-align:right;"> 108.01852 </td>
+   <td style="text-align:right;"> 122.65398 </td>
+   <td style="text-align:right;"> 114.99565 </td>
+   <td style="text-align:right;"> 101.92154 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 81.28961 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 9.165151 </td>
+   <td style="text-align:right;"> 4.898980 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 4.000000 </td>
+   <td style="text-align:right;"> 107.94443 </td>
+   <td style="text-align:right;"> 87.38421 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 4.898980 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 100.17984 </td>
+   <td style="text-align:right;"> 110.07270 </td>
+   <td style="text-align:right;"> 123.33694 </td>
+   <td style="text-align:right;"> 113.49009 </td>
+   <td style="text-align:right;"> 101.68579 </td>
+   <td style="text-align:right;"> 4.898980 </td>
+   <td style="text-align:right;"> 80.94443 </td>
+   <td style="text-align:right;"> 4.472136 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 98.508883 </td>
+   <td style="text-align:right;"> 96.041658 </td>
+   <td style="text-align:right;"> 96.436508 </td>
+   <td style="text-align:right;"> 100.039992 </td>
+   <td style="text-align:right;"> 96.850400 </td>
+   <td style="text-align:right;"> 22.09072 </td>
+   <td style="text-align:right;"> 67.94115 </td>
+   <td style="text-align:right;"> 99.055540 </td>
+   <td style="text-align:right;"> 98.407317 </td>
+   <td style="text-align:right;"> 100.179838 </td>
+   <td style="text-align:right;"> 0.00000 </td>
+   <td style="text-align:right;"> 12.32883 </td>
+   <td style="text-align:right;"> 35.66511 </td>
+   <td style="text-align:right;"> 76.13147 </td>
+   <td style="text-align:right;"> 52.15362 </td>
+   <td style="text-align:right;"> 101.054441 </td>
+   <td style="text-align:right;"> 46.69047 </td>
+   <td style="text-align:right;"> 99.639350 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 108.332820 </td>
+   <td style="text-align:right;"> 106.320271 </td>
+   <td style="text-align:right;"> 106.301458 </td>
+   <td style="text-align:right;"> 109.726934 </td>
+   <td style="text-align:right;"> 106.602064 </td>
+   <td style="text-align:right;"> 14.69694 </td>
+   <td style="text-align:right;"> 75.36577 </td>
+   <td style="text-align:right;"> 108.866891 </td>
+   <td style="text-align:right;"> 108.018517 </td>
+   <td style="text-align:right;"> 110.072703 </td>
+   <td style="text-align:right;"> 12.32883 </td>
+   <td style="text-align:right;"> 0.00000 </td>
+   <td style="text-align:right;"> 36.76955 </td>
+   <td style="text-align:right;"> 83.54639 </td>
+   <td style="text-align:right;"> 58.03447 </td>
+   <td style="text-align:right;"> 110.616455 </td>
+   <td style="text-align:right;"> 56.46238 </td>
+   <td style="text-align:right;"> 109.434912 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 121.950810 </td>
+   <td style="text-align:right;"> 119.431989 </td>
+   <td style="text-align:right;"> 120.349491 </td>
+   <td style="text-align:right;"> 124.000000 </td>
+   <td style="text-align:right;"> 120.581922 </td>
+   <td style="text-align:right;"> 45.51923 </td>
+   <td style="text-align:right;"> 64.18723 </td>
+   <td style="text-align:right;"> 122.849501 </td>
+   <td style="text-align:right;"> 122.653985 </td>
+   <td style="text-align:right;"> 123.336937 </td>
+   <td style="text-align:right;"> 35.66511 </td>
+   <td style="text-align:right;"> 36.76955 </td>
+   <td style="text-align:right;"> 0.00000 </td>
+   <td style="text-align:right;"> 56.39149 </td>
+   <td style="text-align:right;"> 40.49691 </td>
+   <td style="text-align:right;"> 125.171882 </td>
+   <td style="text-align:right;"> 48.53864 </td>
+   <td style="text-align:right;"> 123.773988 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 112.871608 </td>
+   <td style="text-align:right;"> 110.941426 </td>
+   <td style="text-align:right;"> 112.463327 </td>
+   <td style="text-align:right;"> 115.568162 </td>
+   <td style="text-align:right;"> 112.285351 </td>
+   <td style="text-align:right;"> 88.02272 </td>
+   <td style="text-align:right;"> 38.83298 </td>
+   <td style="text-align:right;"> 114.297856 </td>
+   <td style="text-align:right;"> 114.995652 </td>
+   <td style="text-align:right;"> 113.490088 </td>
+   <td style="text-align:right;"> 76.13147 </td>
+   <td style="text-align:right;"> 83.54639 </td>
+   <td style="text-align:right;"> 56.39149 </td>
+   <td style="text-align:right;"> 0.00000 </td>
+   <td style="text-align:right;"> 32.80244 </td>
+   <td style="text-align:right;"> 116.858889 </td>
+   <td style="text-align:right;"> 40.49691 </td>
+   <td style="text-align:right;"> 115.741090 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 100.598211 </td>
+   <td style="text-align:right;"> 99.959992 </td>
+   <td style="text-align:right;"> 100.019998 </td>
+   <td style="text-align:right;"> 102.956301 </td>
+   <td style="text-align:right;"> 99.538937 </td>
+   <td style="text-align:right;"> 58.85576 </td>
+   <td style="text-align:right;"> 24.49490 </td>
+   <td style="text-align:right;"> 102.000000 </td>
+   <td style="text-align:right;"> 101.921538 </td>
+   <td style="text-align:right;"> 101.685791 </td>
+   <td style="text-align:right;"> 52.15362 </td>
+   <td style="text-align:right;"> 58.03447 </td>
+   <td style="text-align:right;"> 40.49691 </td>
+   <td style="text-align:right;"> 32.80244 </td>
+   <td style="text-align:right;"> 0.00000 </td>
+   <td style="text-align:right;"> 103.942292 </td>
+   <td style="text-align:right;"> 23.40940 </td>
+   <td style="text-align:right;"> 103.421468 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4.472136 </td>
+   <td style="text-align:right;"> 12.165525 </td>
+   <td style="text-align:right;"> 6.324555 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 4.898980 </td>
+   <td style="text-align:right;"> 108.01852 </td>
+   <td style="text-align:right;"> 89.86657 </td>
+   <td style="text-align:right;"> 4.000000 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 4.898980 </td>
+   <td style="text-align:right;"> 101.05444 </td>
+   <td style="text-align:right;"> 110.61645 </td>
+   <td style="text-align:right;"> 125.17188 </td>
+   <td style="text-align:right;"> 116.85889 </td>
+   <td style="text-align:right;"> 103.94229 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+   <td style="text-align:right;"> 83.47455 </td>
+   <td style="text-align:right;"> 4.472136 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 79.874902 </td>
+   <td style="text-align:right;"> 78.255990 </td>
+   <td style="text-align:right;"> 78.993671 </td>
+   <td style="text-align:right;"> 82.292162 </td>
+   <td style="text-align:right;"> 78.841613 </td>
+   <td style="text-align:right;"> 58.61740 </td>
+   <td style="text-align:right;"> 26.30589 </td>
+   <td style="text-align:right;"> 81.141851 </td>
+   <td style="text-align:right;"> 81.289606 </td>
+   <td style="text-align:right;"> 80.944425 </td>
+   <td style="text-align:right;"> 46.69047 </td>
+   <td style="text-align:right;"> 56.46238 </td>
+   <td style="text-align:right;"> 48.53864 </td>
+   <td style="text-align:right;"> 40.49691 </td>
+   <td style="text-align:right;"> 23.40940 </td>
+   <td style="text-align:right;"> 83.474547 </td>
+   <td style="text-align:right;"> 0.00000 </td>
+   <td style="text-align:right;"> 82.437855 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4.000000 </td>
+   <td style="text-align:right;"> 8.000000 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+   <td style="text-align:right;"> 4.472136 </td>
+   <td style="text-align:right;"> 107.40577 </td>
+   <td style="text-align:right;"> 89.93331 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+   <td style="text-align:right;"> 3.464102 </td>
+   <td style="text-align:right;"> 4.472136 </td>
+   <td style="text-align:right;"> 99.63935 </td>
+   <td style="text-align:right;"> 109.43491 </td>
+   <td style="text-align:right;"> 123.77399 </td>
+   <td style="text-align:right;"> 115.74109 </td>
+   <td style="text-align:right;"> 103.42147 </td>
+   <td style="text-align:right;"> 4.472136 </td>
+   <td style="text-align:right;"> 82.43786 </td>
+   <td style="text-align:right;"> 0.000000 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="elaboração-da-clusterização-hierárquica" class="level3">
+<h3 class="anchored" data-anchor-id="elaboração-da-clusterização-hierárquica">Elaboração da clusterização hierárquica</h3>
+<p>Realiza a clusterização hierárquica usando o método <em>single linkage</em> (vizinhos mais próximos).</p>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-10_e8f79e66e572aa98e82ecd8d51ab7870">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>cluster_hier <span class="ot">&lt;-</span> <span class="fu">agnes</span>(<span class="at">x =</span> matriz_D, <span class="at">method =</span> <span class="st">"single"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>cluster_hier</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:    agnes(x = matriz_D, method = "single") 
+Agglomerative coefficient:  0.854752 
+Order of objects:
+ [1]  1 10  5  4 16  9  8 18  3  2  6 11 12 13  7 15 17 14
+Height (summary):
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  2.000   2.000   6.633  16.801  24.495  78.256 
+
+Available components:
+[1] "order"  "height" "ac"     "merge"  "diss"   "call"   "method"</code></pre>
+</div>
+</div>
+<p><code>Method</code> é o tipo de encadeamento:</p>
+<ul>
+<li><p>“complete”: encadeamento completo (furthest neighbor ou complete linkage)</p></li>
+<li><p>“single”: encadeamento único (nearest neighbor ou single linkage)</p></li>
+<li><p>“average”: encadeamento médio (between groups ou average linkage)</p></li>
+</ul>
+</section>
+<section id="definição-do-esquema-hierárquico-de-aglomeração" class="level3">
+<h3 class="anchored" data-anchor-id="definição-do-esquema-hierárquico-de-aglomeração">Definição do esquema hierárquico de aglomeração</h3>
+<p>As distâncias (alturas para dendrograma) para as combinações em cada estágio.</p>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-11_84d024c7643400d55f0813d02c10ea49">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>coeficientes <span class="ot">&lt;-</span> <span class="fu">sort</span>(cluster_hier<span class="sc">$</span>height, <span class="at">decreasing =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>coeficientes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  2.000000  2.000000  2.000000  2.000000  2.000000  2.000000  2.000000
+ [8]  2.828427  6.633250 12.328828 14.696938 23.409400 24.494897 32.802439
+[15] 35.665109 40.496913 78.255990</code></pre>
+</div>
+</div>
+<section id="tabela-com-o-esquema-de-aglomeração." class="level4">
+<h4 class="anchored" data-anchor-id="tabela-com-o-esquema-de-aglomeração.">Tabela com o esquema de aglomeração.</h4>
+<blockquote class="blockquote">
+<p>Interpretação do output:</p>
+<p>As linhas são os estágios de aglomeração</p>
+<ul>
+<li><p>Nas colunas Cluster1 e Cluster2, observa-se como ocorreu a junção</p></li>
+<li><p>Quando for número negativo, indica observação isolada</p></li>
+<li><p>Quando for número positivo, indica cluster formado anteriormente (estágio)</p></li>
+<li><p>Coeficientes: as distâncias para as combinações em cada estágio</p></li>
+</ul>
+</blockquote>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-12_93fb8b88b859d65a4b277b0dd0ac4272">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>esquema <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(cluster_hier<span class="sc">$</span>merge, coeficientes))</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(esquema) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Cluster1"</span>, <span class="st">"Cluster2"</span>, <span class="st">"Coeficientes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="visualização-do-esquema-hierárquico-de-aglomeração" class="level4">
+<h4 class="anchored" data-anchor-id="visualização-do-esquema-hierárquico-de-aglomeração">Visualização do esquema hierárquico de aglomeração</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-13_5108e8adc20adaf94f364560aa64244b">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>esquema <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">row.names =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">font_size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped" style="font-size: 20px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Cluster1 </th>
+   <th style="text-align:right;"> Cluster2 </th>
+   <th style="text-align:right;"> Coeficientes </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> -8 </td>
+   <td style="text-align:right;"> -18 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> -4 </td>
+   <td style="text-align:right;"> -16 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> -9 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 5 </td>
+   <td style="text-align:right;"> -1 </td>
+   <td style="text-align:right;"> -10 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 6 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> -5 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 7 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 2.000000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 8 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> -3 </td>
+   <td style="text-align:right;"> 2.828427 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 9 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> -2 </td>
+   <td style="text-align:right;"> 6.633250 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:right;"> -11 </td>
+   <td style="text-align:right;"> -12 </td>
+   <td style="text-align:right;"> 12.328828 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 11 </td>
+   <td style="text-align:right;"> -6 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 14.696938 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 12 </td>
+   <td style="text-align:right;"> -15 </td>
+   <td style="text-align:right;"> -17 </td>
+   <td style="text-align:right;"> 23.409400 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 13 </td>
+   <td style="text-align:right;"> -7 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 24.494897 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 14 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> -14 </td>
+   <td style="text-align:right;"> 32.802439 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 15 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> -13 </td>
+   <td style="text-align:right;"> 35.665109 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 40.496913 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 17 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 78.255990 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p><strong>Interpretação da tabela</strong></p>
+<p>Vemos que várias observações se unem na altura 2. Provavelmente se referem àquelas</p>
+<p>Na primeira linha, que é o estágio 1de aglomeração, a observação 8 foi juntada à observação 18 na altura 2.</p>
+<p>Na segunda linha, que é o estágio 2 da aglomeração, a observação 4 foi juntada à observação 16 na altura 2.</p>
+<p>A primeira vez que uma nova observação é adicionada a um cluster é na teceira linha, que é o estágio 3 da aglomeração, em que <em>cluster</em> gerado no estágio 2 é unido recebe a observação 9, também na altura 2.</p>
+</section>
+</section>
+<section id="dendrograma" class="level3">
+<h3 class="anchored" data-anchor-id="dendrograma">Dendrograma</h3>
+<section id="construção-do-dendrograma" class="level4">
+<h4 class="anchored" data-anchor-id="construção-do-dendrograma">Construção do dendrograma</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-14_c7c0bfa1d5d2eaef317723136c448aa5">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#dev.off()</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_dend</span>(<span class="at">x =</span> cluster_hier)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+"none")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="mod1_01_04_analise_de_cluster_varejistas_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><strong>Interpretação do gráfico</strong></p>
+<ol type="1">
+<li>Vemos de fato a formação de um <em>cluster</em> formado pelas ligações abaixo da altura 6,6, onde a observação 2 se liga ao <em>cluster</em>, confirmando o gráfico 3D do início.</li>
+<li>Fazendo um corte na altura do 39, temos 3 <em>clusters</em>, um em que a observação 13 é a última a ser adicionada ao <em>cluster</em> e outro em que a observação 14 é a última a ser adicionada em outro <em>cluster</em>.</li>
+<li>O <em>cluster</em> 2 acaba ficando com lojas um pouco distintas, pois a observação se junta à ele numa altura muito alta, o que representa que ela é bem diferente.</li>
+<li>Se o corte fosse traçado 33, os <em>clusters</em> ficariam mais homogêneos, com as obervações 13 e 14 formando <em>clusters</em> de uma única observação.</li>
+</ol>
+</section>
+<section id="dendrograma-com-visualização-dos-clusters" class="level4">
+<h4 class="anchored" data-anchor-id="dendrograma-com-visualização-dos-clusters">Dendrograma com visualização dos clusters</h4>
+<p>Definindo 3 clusters para comparar com regionais</p>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-15_6d7907594b170edff72ca5db6fe57824">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_dend</span>(<span class="at">x =</span> cluster_hier,</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k_colors =</span> <span class="fu">c</span>(<span class="st">"deeppink4"</span>, <span class="st">"darkviolet"</span>, <span class="st">"deeppink"</span>),</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">color_labels_by_k =</span> F,</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">rect =</span> T,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rect_fill =</span> T,</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="dv">1</span>,</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> <span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+"none")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="mod1_01_04_analise_de_cluster_varejistas_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados" class="level3">
+<h3 class="anchored" data-anchor-id="criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados">Criando variável categórica para indicação do cluster no banco de dados</h3>
+<p>O argumento ‘k’ indica a quantidade de clusters</p>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-16_3d20fa14683d2f036feaebb07e695f22">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>RegionalVarejista<span class="sc">$</span>cluster_H <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">cutree</span>(<span class="at">tree =</span> cluster_hier, <span class="at">k =</span> <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="visualização-da-base-de-dados-com-a-alocação-das-observações-nos-clusters" class="level3">
+<h3 class="anchored" data-anchor-id="visualização-da-base-de-dados-com-a-alocação-das-observações-nos-clusters">Visualização da base de dados com a alocação das observações nos clusters</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-17_ef5ec004b58f806ffc242b5add2713af">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>RegionalVarejista <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(regional, cluster_H) <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(regional) <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">font_size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped" style="font-size: 20px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> regional </th>
+   <th style="text-align:left;"> cluster_H </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p><strong>Conclusão:</strong> as lojas das mesmas regionais caíram nos mesmos <em>clusters.</em></p>
+</section>
+<section id="estatísticas-descritivas-dos-clusters-por-variável" class="level3">
+<h3 class="anchored" data-anchor-id="estatísticas-descritivas-dos-clusters-por-variável">Estatísticas descritivas dos clusters por variável</h3>
+<p>Estudando mais profundamente as variáveis por <em>cluster.</em></p>
+<section id="variável-atendimento" class="level4">
+<h4 class="anchored" data-anchor-id="variável-atendimento">Variável ‘atendimento’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-18_1a1ec4be9c24b42f6b891ab34a643b50">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">group_by</span>(RegionalVarejista, cluster_H) <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean =</span> <span class="fu">mean</span>(atendimento, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">sd</span>(atendimento, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">min =</span> <span class="fu">min</span>(atendimento, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">max =</span> <span class="fu">max</span>(atendimento, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  cluster_H  mean    sd   min   max
+  &lt;fct&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 1           6.2  3.19     2    14
+2 2          55   15.7     38    76
+3 3          56   15.9     40    78</code></pre>
+</div>
+</div>
+</section>
+<section id="variável-sortimento" class="level4">
+<h4 class="anchored" data-anchor-id="variável-sortimento">Variável ‘sortimento’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-19_37b6c18a638ba231806b20b52e0a488d">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">group_by</span>(RegionalVarejista, cluster_H) <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean =</span> <span class="fu">mean</span>(sortimento, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">sd</span>(sortimento, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">min =</span> <span class="fu">min</span>(sortimento, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">max =</span> <span class="fu">max</span>(sortimento, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  cluster_H  mean    sd   min   max
+  &lt;fct&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 1           4.2  1.48     2     6
+2 2          41   12.9     32    60
+3 3          74   12.8     56    86</code></pre>
+</div>
+</div>
+</section>
+<section id="variável-organização" class="level4">
+<h4 class="anchored" data-anchor-id="variável-organização">Variável ‘organização’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-20_12502dc88e834a92b017c71fb9360793">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">group_by</span>(RegionalVarejista, cluster_H) <span class="sc">%&gt;%</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean =</span> <span class="fu">mean</span>(organização, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">sd</span>(organização, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">min =</span> <span class="fu">min</span>(organização, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">max =</span> <span class="fu">max</span>(organização, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  cluster_H  mean    sd   min   max
+  &lt;fct&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 1           4.4  1.26     2     6
+2 2          93    7.02    86   100
+3 3          45    9.45    38    58</code></pre>
+</div>
+</div>
+<p><strong>Análise das variáveis:</strong></p>
+<ol type="1">
+<li>As lojas do <em>cluster</em> 1 possuem as menores médias nas 3 variáveis. São as lojas azuis no gráfico 3D do início deste documento.</li>
+<li>As lojas do <em>cluster</em> 2 possuem notas médias no atendimento e no sortimento, mas se destacam na organização, enquanto as lojas do <em>cluster</em> 3 tem notas médias em atendimento e organização, mas se destacam no sortimento.</li>
+<li>Conclui-se que para melhoria da rede, as lojas do <em>cluster</em> 1 precisam melhorar nos 3 quesitos, enquanto que as lojas do <em>cluster</em> 2 precisam melhorar no atendimento e no sortimento e o <em>cluster</em> 3 precisa melhorar em atendimento e organização.</li>
+</ol>
+</section>
+</section>
+<section id="análise-de-variância-de-um-fator-anova" class="level3">
+<h3 class="anchored" data-anchor-id="análise-de-variância-de-um-fator-anova">Análise de variância de um fator (ANOVA)</h3>
+<p><strong>Objetivo:</strong> verificar quais variáveis são importantes para a formação de pelo menos um <em>cluster.</em></p>
+<p>Basicamente trata-se verificar se o p-valor da tabela (na coluna Pr(&gt;F)) é menor que 0,05 para que uma variável seja estatisticamente significante para formar um <em>cluster</em>.</p>
+<blockquote class="blockquote">
+<p><strong>Interpretação do <em>output</em> das ANOVAs das tabelas a seguir:</strong></p>
+<p><strong>Passo1:</strong> a linha <strong>Mean Sq do cluster_H</strong> indica a variabilidade entre grupos. Trata-se da soma dos quadrados.</p>
+<p><strong>Passo2:</strong> a linha <strong>Mean Sq dos Residuals</strong> indica a variabilidade dentro dos grupos. Também é soma dos quadrados dos resíduos</p>
+<p><strong>Passo3:</strong> o <strong>F value</strong> é estatística de teste, oriunda da razão entre as médias (<span class="math inline">\(\dfrac{\text{Sum Sq do cluster\_H}}{\text{Sum Sq dos Residuals}\)</span>)</p>
+<p><strong>Passo 4: Pr(&gt;F</strong>): p-valor da estatística F do passo 3</p>
+<ul>
+<li>Se <strong>p-valor &lt; 0.05</strong>: pelo menos um <em>cluster</em> apresenta média estatisticamente diferente dos demais</li>
+</ul>
+<p><strong>Passo 5:</strong> A variável mais discriminante dos grupos contém maior estatística F (e significativa)</p>
+</blockquote>
+<section id="anova-da-variável-atendimento" class="level4">
+<h4 class="anchored" data-anchor-id="anova-da-variável-atendimento">ANOVA da variável ‘atendimento’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-21_95c7392e3fe2ef5511961e510689561b">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_atendimento <span class="ot">&lt;-</span> <span class="fu">aov</span>(<span class="at">formula =</span> atendimento <span class="sc">~</span> cluster_H,</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="at">data =</span> RegionalVarejista))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+cluster_H    2  10804    5402   50.91 2.06e-07 ***
+Residuals   15   1592     106                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>P-valor= 2.06e-07, portanto menor que 0,05, o que significa que a variável <strong>atendimento</strong> é estatisticamente relevante para formar ao menos 1 <em>cluster</em>.</p>
+</section>
+<section id="anova-da-variável-sortimento" class="level4">
+<h4 class="anchored" data-anchor-id="anova-da-variável-sortimento">ANOVA da variável ‘sortimento’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-22_ad1a554af162e1e8c2bf53c94f7013fb">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_sortimento <span class="ot">&lt;-</span> <span class="fu">aov</span>(<span class="at">formula =</span> sortimento <span class="sc">~</span> cluster_H,</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="at">data =</span> RegionalVarejista))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+cluster_H    2  14804    7402   110.2 1.08e-09 ***
+Residuals   15   1008      67                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>P-valor= 1.08e-09, portanto menor que 0,05, o que significa que a variável <strong>sortimento</strong> é estatisticamente relevante para formar ao menos 1 <em>cluster</em>.</p>
+</section>
+<section id="anova-da-variável-organização" class="level4">
+<h4 class="anchored" data-anchor-id="anova-da-variável-organização">ANOVA da variável ‘organização’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-23_3afa38480cd3b9bbbfd33035bd636204">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_organiza <span class="ot">&lt;-</span> <span class="fu">aov</span>(<span class="at">formula =</span> organização <span class="sc">~</span> cluster_H,</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="at">data =</span> RegionalVarejista))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value  Pr(&gt;F)    
+cluster_H    2  23155   11578   403.5 9.1e-14 ***
+Residuals   15    430      29                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>P-valor= 9.1e-14, portanto menor que 0,05, o que significa que a variável <strong>organização</strong> é estatisticamente relevante para formar ao menos 1 <em>cluster</em>.</p>
+<hr>
+<p>Em ordem de importância, a variável <strong>orgnanização</strong> é a que mais auxiliou na formação dos <em>clusters</em>, com uma estatística F de 403,5, seguida pela variável <strong>sortimento</strong> com uma estatística F de 110,2 e por fim a variável <strong>atendimento</strong>, com uma estatística F de 50,91.</p>
+</section>
+</section>
+<section id="análise-de-robustez" class="level3">
+<h3 class="anchored" data-anchor-id="análise-de-robustez">Análise de Robustez</h3>
+<p>Vamos realizar uma análise de robustez do resultado anterior.</p>
+<p>Vamos alterar a medida de distância de <strong>euclidiana</strong> para <strong><em>Manhattan</em></strong> e o método de encadeamento de <strong><em>single linkage</em></strong> para <strong><em>complete linkage</em></strong>.</p>
+<section id="elaboração-da-matriz-de-distâncias-com-a-distância-de-manhattan" class="level4">
+<h4 class="anchored" data-anchor-id="elaboração-da-matriz-de-distâncias-com-a-distância-de-manhattan">Elaboração da matriz de distâncias com a distância de ‘Manhattan’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-24_4e9039457e7f7fae8ef3076ca68de677">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>matriz_DM <span class="ot">&lt;-</span> RegionalVarejista <span class="sc">%&gt;%</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(atendimento, sortimento, organização) <span class="sc">%&gt;%</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dist</span>(<span class="at">method =</span> <span class="st">"manhattan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="clusterização-hierárquica-com-método-complete" class="level4">
+<h4 class="anchored" data-anchor-id="clusterização-hierárquica-com-método-complete">Clusterização hierárquica com método ‘complete’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-25_02fce0d5e9574ebc4ddb0575224fb87e">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>cluster_hier_man <span class="ot">&lt;-</span> <span class="fu">agnes</span>(<span class="at">x =</span> matriz_DM, <span class="at">method =</span> <span class="st">"complete"</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>cluster_hier_man</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:    agnes(x = matriz_DM, method = "complete") 
+Agglomerative coefficient:  0.9086189 
+Order of objects:
+ [1]  1 10  3  5  9  4 16  8 18  2  6 11 12 13  7 15 17 14
+Height (summary):
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2.00    4.00   14.00   39.88   42.00  214.00 
+
+Available components:
+[1] "order"  "height" "ac"     "merge"  "diss"   "call"   "method"</code></pre>
+</div>
+</div>
+</section>
+<section id="construção-do-dendrograma-1" class="level4">
+<h4 class="anchored" data-anchor-id="construção-do-dendrograma-1">Construção do dendrograma</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-26_5ed17cc044993626e81df42e10054e3b">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co">#dev.off()</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_dend</span>(<span class="at">x =</span> cluster_hier_man)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+"none")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="mod1_01_04_analise_de_cluster_varejistas_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>De fato, o resultado também aponta para 3 clusters</p>
+</section>
+</section>
+<section id="definindo-3-clusters-para-comparar-com-regionais" class="level3">
+<h3 class="anchored" data-anchor-id="definindo-3-clusters-para-comparar-com-regionais">Definindo 3 clusters para comparar com regionais</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-27_3293ca94852d650473d3bf1d0ed4a88a">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_dend</span>(<span class="at">x =</span> cluster_hier_man,</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k_colors =</span> <span class="fu">c</span>(<span class="st">"deeppink4"</span>, <span class="st">"darkviolet"</span>, <span class="st">"deeppink"</span>),</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">color_labels_by_k =</span> F,</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">rect =</span> T,</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rect_fill =</span> T,</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="dv">1</span>,</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> <span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+"none")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="mod1_01_04_analise_de_cluster_varejistas_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="adicionando-a-variável-ao-banco-de-dados" class="level3">
+<h3 class="anchored" data-anchor-id="adicionando-a-variável-ao-banco-de-dados">Adicionando a variável ao banco de dados</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-28_31af5cad6e25b4029a68b02c4b05b605">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>RegionalVarejista<span class="sc">$</span>cluster_H_man <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">cutree</span>(<span class="at">tree =</span> cluster_hier_man, <span class="at">k =</span> <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para este caso, gera exatamente o mesmo resultado, o que significa que é uma clusterização robusta, isto é, que não se altera de acordo com o tipo de distância e o método de <em>linkage</em> escolhidos.</p>
+</section>
+</section>
+<section id="esquema-de-aglomeração-não-hierárquico-k-means" class="level2">
+<h2 class="anchored" data-anchor-id="esquema-de-aglomeração-não-hierárquico-k-means">Esquema de aglomeração não hierárquico K-MEANS</h2>
+<p>O KMeans minimiza a soma dos quadrados internos de cada <em>cluster</em>.</p>
+<section id="elaboração-da-clusterização-não-hieráquica-k-means" class="level3">
+<h3 class="anchored" data-anchor-id="elaboração-da-clusterização-não-hieráquica-k-means">Elaboração da clusterização não hieráquica k-means</h3>
+<p>Realizando a clusterização usando o número de <em>clusters</em> definidos na clusterização hierárquia como parâmetro de entrada no KMeans.</p>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-29_86843173ad4c63019e0eedd972eeef3b">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>cluster_kmeans <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(RegionalVarejista[,<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">centers =</span> <span class="dv">3</span>)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>cluster_kmeans</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>K-means clustering with 3 clusters of sizes 1, 8, 9
+
+Cluster means:
+  atendimento sortimento organização
+1   14.000000   2.000000    4.000000
+2   55.500000  57.500000   69.000000
+3    5.333333   4.444444    4.444444
+
+Clustering vector:
+ [1] 3 1 3 3 3 2 2 3 3 3 2 2 2 2 2 3 2 3
+
+Within cluster sum of squares by cluster:
+[1]    0.00000 9692.00000   52.44444
+ (between_SS / total_SS =  81.2 %)
+
+Available components:
+
+[1] "cluster"      "centers"      "totss"        "withinss"     "tot.withinss"
+[6] "betweenss"    "size"         "iter"         "ifault"      </code></pre>
+</div>
+</div>
+</section>
+<section id="criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados-1" class="level3">
+<h3 class="anchored" data-anchor-id="criando-variável-categórica-para-indicação-do-cluster-no-banco-de-dados-1">Criando variável categórica para indicação do cluster no banco de dados</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-30_0276c190efa0e58546487b32101131c4">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>RegionalVarejista<span class="sc">$</span>cluster_K <span class="ot">&lt;-</span> <span class="fu">factor</span>(cluster_kmeans<span class="sc">$</span>cluster)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>RegionalVarejista<span class="sc">$</span>cluster_K </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 3 1 3 3 3 2 2 3 3 3 2 2 2 2 2 3 2 3
+Levels: 1 2 3</code></pre>
+</div>
+</div>
+</section>
+<section id="método-de-elbow-para-identificação-do-número-ótimo-de-clusters" class="level3">
+<h3 class="anchored" data-anchor-id="método-de-elbow-para-identificação-do-número-ótimo-de-clusters">Método de Elbow para identificação do número ótimo de clusters</h3>
+<p>Checando quantos grupos o método <em>Elbow</em> recomenda.</p>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-31_ced97fdaba77c9e32db7545ad7571446">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(RegionalVarejista[,<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>], kmeans, <span class="at">method =</span> <span class="st">"wss"</span>, <span class="at">k.max =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="mod1_01_04_analise_de_cluster_varejistas_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>É possível observar que há uma susbtancial queda na soma dos quadrados internos das observações até a quantidade de <em>clusters</em> ser 3, a partir disso o aumento na quantidade <em>clusters</em> não altera muito.</p>
+</section>
+<section id="visualização-da-base-de-dados-1" class="level3">
+<h3 class="anchored" data-anchor-id="visualização-da-base-de-dados-1">Visualização da base de dados</h3>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-32_74f30fac5300bab4bb2f5f3bb28ba1f2">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>RegionalVarejista <span class="sc">%&gt;%</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>,</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">font_size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped" style="font-size: 20px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> loja </th>
+   <th style="text-align:left;"> regional </th>
+   <th style="text-align:right;"> atendimento </th>
+   <th style="text-align:right;"> sortimento </th>
+   <th style="text-align:right;"> organização </th>
+   <th style="text-align:left;"> cluster_H </th>
+   <th style="text-align:left;"> cluster_H_man </th>
+   <th style="text-align:left;"> cluster_K </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 04 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 05 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 06 </td>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:right;"> 38 </td>
+   <td style="text-align:right;"> 38 </td>
+   <td style="text-align:right;"> 100 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 07 </td>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:right;"> 40 </td>
+   <td style="text-align:right;"> 78 </td>
+   <td style="text-align:right;"> 38 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 08 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 09 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 11 </td>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:right;"> 54 </td>
+   <td style="text-align:right;"> 32 </td>
+   <td style="text-align:right;"> 86 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 12 </td>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:right;"> 52 </td>
+   <td style="text-align:right;"> 34 </td>
+   <td style="text-align:right;"> 98 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 13 </td>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:right;"> 76 </td>
+   <td style="text-align:right;"> 60 </td>
+   <td style="text-align:right;"> 88 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 14 </td>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:right;"> 78 </td>
+   <td style="text-align:right;"> 86 </td>
+   <td style="text-align:right;"> 38 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 15 </td>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:right;"> 54 </td>
+   <td style="text-align:right;"> 76 </td>
+   <td style="text-align:right;"> 58 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 17 </td>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:right;"> 52 </td>
+   <td style="text-align:right;"> 56 </td>
+   <td style="text-align:right;"> 46 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 18 </td>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Observa-se que os membros dos clusters pela clusterização hierárquica são os mesmo que os dos clusters definidos por KMeans, que por sua vez são os mesmos determinados pelas regionais.</p>
+</section>
+<section id="análise-de-variância-de-um-fator-anova-1" class="level3">
+<h3 class="anchored" data-anchor-id="análise-de-variância-de-um-fator-anova-1">Análise de variância de um fator (ANOVA)</h3>
+<p>Utilizando ANOVA para verificar quais variáveis foram relevantes para a formação de pelo menos 1 <em>cluster</em>.</p>
+<section id="anova-da-variável-atendimento-1" class="level4">
+<h4 class="anchored" data-anchor-id="anova-da-variável-atendimento-1">ANOVA da variável ‘atendimento’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-33_ffb39a6f0c79f529df1753ac7cb9fa6a">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_atendimento <span class="ot">&lt;-</span> <span class="fu">aov</span>(</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> atendimento <span class="sc">~</span> cluster_K,</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> RegionalVarejista))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value  Pr(&gt;F)    
+cluster_K    2  10870    5435   53.42 1.5e-07 ***
+Residuals   15   1526     102                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="anova-da-variável-sortimento-1" class="level4">
+<h4 class="anchored" data-anchor-id="anova-da-variável-sortimento-1">ANOVA da variável ‘sortimento’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-34_6c1fe18a3c73681d3697440b550aaaa6">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_sortimento <span class="ot">&lt;-</span> <span class="fu">aov</span>(<span class="at">formula =</span> sortimento <span class="sc">~</span> cluster_K,</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> RegionalVarejista))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+cluster_K    2  12632    6316   29.79 5.97e-06 ***
+Residuals   15   3180     212                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="anova-da-variável-organização-1" class="level4">
+<h4 class="anchored" data-anchor-id="anova-da-variável-organização-1">ANOVA da variável ‘organização’</h4>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-35_a7fd6bd4af8b48d9b62678466e48e442">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_organiza <span class="ot">&lt;-</span> <span class="fu">aov</span>(<span class="at">formula =</span> organização <span class="sc">~</span> cluster_K,</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> RegionalVarejista))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+cluster_K    2  18548    9274   27.61 9.38e-06 ***
+Residuals   15   5038     336                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p><strong>Conclusão:</strong> como na clusterização hierárquica, as 3 variáveis são relevantes para a formação de ao menos um <em>cluster</em> (todas com Pr(&gt;F) menor que 0,05), sendo a mais relevante é a <strong>organização</strong> (com maior F value - 403,5) e a variável <strong>atendimento</strong> (com menor F value - 50,91) é a menos relevante.</p>
+</section>
+</section>
+</section>
+<section id="comparando-os-resultados-dos-esquemas-hierárquico-e-não-hierárquico" class="level2">
+<h2 class="anchored" data-anchor-id="comparando-os-resultados-dos-esquemas-hierárquico-e-não-hierárquico">Comparando os resultados dos esquemas hierárquico e não hierárquico</h2>
+<div class="cell" data-hash="mod1_01_04_analise_de_cluster_varejistas_cache/html/unnamed-chunk-36_7acf36f4c1aaa8b07aff686631fd285e">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>RegionalVarejista <span class="sc">%&gt;%</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(regional, cluster_H, cluster_K) <span class="sc">%&gt;%</span></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(regional) <span class="sc">%&gt;%</span></span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>,</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">font_size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped" style="font-size: 20px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> regional </th>
+   <th style="text-align:left;"> cluster_H </th>
+   <th style="text-align:left;"> cluster_K </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 1 </td>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 2 </td>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Regional 3 </td>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> 3 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>FIM!</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./mod1_01_03_analise_de_clusters_binarias.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Exemplo Pesquisa Binária</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./mod1_01_05_analise_de_cluster_cartao.html" class="pagination-link">
+        <span class="nav-page-text">Exemplo Cartão de Crédito</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

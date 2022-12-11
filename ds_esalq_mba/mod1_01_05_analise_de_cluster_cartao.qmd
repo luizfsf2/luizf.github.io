@@ -1,0 +1,213 @@
+---
+author: "Luiz Favaro"
+format: html
+editor: visual
+---
+
+# Exemplo Cartão de Crédito {.unnumbered}
+
+**Curso:** MBA DSA USP ESALQ
+
+**Aula:** Unsupervised Machine Learning - Clustering II
+
+**Prof.:** Wilson Tarantin Jr.
+
+**Fonte:** https://www.kaggle.com/datasets/aryashah2k/credit-card-customer-data
+
+**Objetivo:** Analisar os grupos de clientes mais e menos leais à marca (por meio do uso), categorizando os clientes de uma operadora de cartão de crédito.
+
+## Preparação
+
+### Carregando e instalando os pacotes
+
+```{r}
+pacotes <- c("plotly", 
+             "tidyverse", 
+             "ggrepel", 
+             "knitr", 
+             "kableExtra",
+             "reshape2",
+             "misc3d",
+             "plot3D", 
+             "cluster", 
+             "factoextra")
+
+if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
+  instalador <- pacotes[!pacotes %in% installed.packages()]
+  for(i in 1:length(instalador)) {
+    install.packages(instalador, dependencies = T)
+    break()}
+  sapply(pacotes, require, character = T) 
+} else {
+  sapply(pacotes, require, character = T) 
+}
+```
+
+### Importando o dataset
+
+```{r}
+dados_uso <- read.csv("./data/mod1_01_05_cartao_credito.csv")
+dados_uso
+```
+
+Há 660 observações com 7 variáveis, sendo que Sl_no e Customer.Key são *ID* e ficarão de fora da análise.
+
+### Realizando a padronização dos dados
+
+Como há unidades diferentes (Avg_Credit_Limit, Total_Credit_Cards ...), será necessário padronizar os dados.
+
+Padronizando os dados e aproveitando para remover as colunas IDs:
+
+```{r}
+dados_padronizado <- as.data.frame(scale(dados_uso[,3:7]))
+dados_padronizado
+```
+
+### Visualização
+
+```{r}
+scatter3D(x=dados_padronizado$Avg_Credit_Limit,
+          y=dados_padronizado$Total_Credit_Cards,
+          z=dados_padronizado$Total_visits_bank,
+          phi = 1, bty = "g", pch = 20, cex = 1,
+          xlab = "Limite Médio",
+          ylab = "Nº Cartões",
+          zlab = "Nº Visitas",
+          main = "Clientes", 
+          colkey = F)
+```
+
+Apesar das 5 variáveis disponíveis, plotou-se apenas 3 e com elas é possível observar:
+
+-   Há diferenciação quanto ao número de visitas (que aparece em "camadas" por ser uma variável discreta).
+
+-   Outro ponto a observar são os clientes com poucas visitas e muitos cartões e alto limite, no canto inferior esquerdo, em azul e roxo, pois parece ser um único *cluster*.
+
+-   Há ainda clientes com baixo limite, poucos cartões e poucas visitas.
+
+## Clusterização
+
+### Método de Elbow para identificação do número ótimo de clusters
+
+```{r}
+#dev.off()
+fviz_nbclust(dados_padronizado, kmeans, method = "wss", k.max = 10)
+```
+
+Podemos concluir que 4 clusters é uma opção viável
+
+### Elaboração da clusterização não hieráquica k-means
+
+```{r}
+cluster_kmeans <- kmeans(dados_padronizado,
+                         centers = 4)
+cluster_kmeans
+```
+
+### Adicionando a variável
+
+Salva o resultado da clusterização no banco padronizado e no banco original, pois os dados padronizados serão utilizados para calcular o ANOVA.
+
+```{r}
+dados_padronizado$cluster_K <- factor(cluster_kmeans$cluster)
+dados_uso$cluster_K <- factor(cluster_kmeans$cluster)
+dados_uso
+```
+
+### Analisando *Clusters* por meio de gráficos
+
+```{r}
+ggplot(dados_padronizado) +
+  geom_point(aes(x = Avg_Credit_Limit, 
+                 y = Total_Credit_Cards, 
+                 color = cluster_K)) + 
+  labs(x = "Limite Médio",
+       y = "Quantidade de Cartões")
+```
+
+Conforme a análise do gráfico 3D no início, de fato há um *cluster* com as observações que possuem um grande número de cartões e um alto limite médio (*cluster* 2).
+
+O *cluster* 1 é formado por aqueles que possuem baixa quantidade de cartões e baixo limite.
+
+Ao centro estão os clusters 3 e 4 preenchendo o espaço central, com baixo a médio limite mas um pouco mais de cartões.
+
+```{r}
+ggplot(dados_padronizado) +
+  geom_point(aes(x = Avg_Credit_Limit, 
+                 y = Total_visits_bank, 
+                 color = cluster_K)) + 
+  labs(x = "Limite Médio",
+       y = "Quantidade de Visitas ao Banco")
+```
+
+Os *clusters* 3 e 4 que ocuparam o mesmo setor no gráfico anterior se separa neste gráfico. É possível observar que enquant o *cluster* 3 é composto por clientes que frequentam mais o banco que os clientes do *cluster* 4.
+
+```{r}
+ggplot(dados_padronizado) +
+  geom_point(aes(x = Avg_Credit_Limit, 
+                 y = Total_visits_online, 
+                 color = cluster_K)) + 
+  labs(x = "Limite Médio",
+       y = "Quantidade de Visitas Online ao Banco")
+```
+
+### Analisando por meio de estatísticas descritivas
+
+```{r}
+análise <- group_by(dados_uso, cluster_K) %>%
+  summarise(limite = mean(Avg_Credit_Limit, na.rm = TRUE),
+            q_cartoes = mean(Total_Credit_Cards, na.rm = TRUE),
+            q_vistias = mean(Total_visits_bank, na.rm = TRUE),
+            q_online = mean(Total_visits_online, na.rm = TRUE),
+            q_liga = mean(Total_calls_made, na.rm = TRUE))
+análise
+```
+
+O *cluster* 2 possui alto limite (141040,00), muitos cartões, muitas visitas online e poucas presenciais.
+
+O *cluster* 1possui os menores limite (12167,42), número de cartões e visitas online e presencial, mas é o que mais liga no banco.
+
+### ANOVAs
+
+Com as ANOVAs descobre-se quais variáveis contribuíram para a formação dos *clusters* e qual o *ranking* dessas contribuições.
+
+Para ter contribuído, o P-value (Pr(\>F)) deve ser menor que 0,05 e o F-value maior determina a que mais contribuiu.
+
+```{r}
+summary(anova_limite <- aov(formula = Avg_Credit_Limit ~ cluster_K,
+                            data = dados_padronizado))
+```
+
+```{r}
+summary(anova_cartoes <- aov(formula = Total_Credit_Cards ~ cluster_K,
+                             data = dados_padronizado))
+```
+
+```{r}
+summary(anova_visitas <- aov(formula = Total_visits_bank ~ cluster_K,
+                             data = dados_padronizado))
+```
+
+```{r}
+summary(anova_online <- aov(formula = Total_visits_online ~ cluster_K,
+                            data = dados_padronizado))
+```
+
+```{r}
+summary(anova_liga <- aov(formula = Total_calls_made ~ cluster_K,
+                          data = dados_padronizado))
+```
+
+Todas as variáveis são relevantes na criação de pelo menos um *cluster*, na seguinte ordem:
+
+-   Total_visits_bank
+
+-   Total_visits_online
+
+-   Avg_Credit_Limit
+
+-   Total_Credit_Cards
+
+-   Total_calls_made
+
+Fim!
